@@ -1,0 +1,9 @@
+# Task 
+name: heichole_tool_recognition_fewshot
+data: HeiCholeDataloader
+data_config:
+  transform: None
+  data_dir: /pasteur/data/heichole
+label_names: ['Grasper', 'Clipper', 'Coagulation instruments', 'Scissors', 'Suction-irrigation', 'Specimen bag', 'Stapler']
+clip_eval_mode: 'sigmoid'  # multi-label binary classification
+shots: one

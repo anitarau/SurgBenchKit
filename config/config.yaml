@@ -1,0 +1,19 @@
+defaults:
+  - _self_
+  - model: GeminiPro1-5
+  - task: dresden_anatomy_presence
+  - override hydra/hydra_logging: disabled  
+  - override hydra/job_logging: disabled  
+
+# Set model and task
+workdir: /pasteur/u/arau/projects/surg_bench/check_for_pub/
+exp_name: deleteme_for_pub
+eval_mode: infer_data
+
+override_outputs: False
+
+#prevent hydra outputs  
+hydra:  
+  output_subdir: null  
+  run:  
+    dir: .

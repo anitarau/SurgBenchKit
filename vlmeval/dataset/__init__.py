@@ -55,6 +55,13 @@ from .video_dataset_config import *
 from ..smp import *
 from .Omnidocbench.omnidocbench import OmniDocBench
 from .moat import MOAT
+from .dresden_anatomy_presence import DresdenAnatomyPresence
+from .endoscapes_cvs_assessment import EndoscapesCVSAssessment
+from .cholec80_phase_recognition import Cholec80PhaseRecognition
+from .cholec80_tool_recognition import Cholec80ToolRecognition
+from .heichole_tasks import HeiCholeDataloader
+from .multibypass140_phase_recognition import MultiBypass140PhaseRecognition
+from .cholect45 import Cholect45Triplet
 
 
 class ConcatDataset(ImageBaseDataset):

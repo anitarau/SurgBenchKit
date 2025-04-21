@@ -1,0 +1,9 @@
+# Task 
+name: avos_action_prediction
+data: AVOSActionSegmentation
+data_config:
+  transform: None
+  data_dir: /pasteur2/u/arau/data/AVOS_MedGemini #/pasteur/data/spatiotemporal-open-surgery/AVOS/data
+label_names: ['cutting', 'tying', 'suturing', 'background']
+clip_eval_mode: 'singlelabel'  # single label multi-class classification
+shots: zero

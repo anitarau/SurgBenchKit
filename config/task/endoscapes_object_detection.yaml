@@ -1,0 +1,8 @@
+# Task 
+name: endoscapes_object_detection
+data: EndoscapesObjectDetectionPerIM
+data_config:
+  transform: None
+  data_dir: /pasteur/data/endoscapes/
+label_names: ['cyctic artery', 'cystic duct', 'cystic plate', 'gallbladder', 'tool']
+shots: zero

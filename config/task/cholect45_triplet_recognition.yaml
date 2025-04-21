@@ -1,0 +1,7 @@
+# Task 
+name: cholect45_triplet_recognition
+data: Cholect45Triplet
+data_config:
+  transform: None
+  data_dir: /pasteur/data/cholect45/CholecT45/
+clip_eval_mode: 'sigmoid'  # multi-label binary classification

@@ -1,0 +1,8 @@
+# Task 
+name: multibypass140_phase_recognition
+data: MultiBypass140PhaseRecognition
+data_config:
+  transform: None
+  data_dir: /pasteur2/u/arau/data/MultiBypass140/
+label_names: ['Preparation', 'Gastric pouch creation', 'Omentum division', 'Gastrojejunal anastomosis', 'Anastomosis test', 'Jejunal separation', 'Petersen space closure', 'Jejunojejunal anastomosis', 'Mesenteric defect closure', 'Cleaning & Coagulation', 'Disassembling', 'Other intervention']
+clip_eval_mode: 'singlelabel'  # single label multi-class classification

@@ -36,6 +36,13 @@ class PaliGemma(BaseModel):
         input_len = model_inputs['input_ids'].shape[-1]
 
         with torch.inference_mode():
+            #model input to float16  # added by Anita Rau from older version of VLMEvalKit in Apr 2025
+            for key, value in model_inputs.items():
+                if key == 'pixel_values':
+                    if isinstance(value, torch.Tensor):  # Only process tensor inputs
+                        model_inputs[key] = value.to(self.model.device)  # Move to model's device
+                        model_inputs[key] = model_inputs[key].to(next(self.model.parameters()).dtype)  # Match model dtype
+
             generation = self.model.generate(
                 **model_inputs, max_new_tokens=512, do_sample=False
             )

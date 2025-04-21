@@ -91,3 +91,5 @@ from .ola import Ola
 from .ursa import UrsaChat
 from .vlm_r1 import VLMR1Chat
 from .aki import AKI
+from .clip import CLIPVLMWrapper, CLIPOpenAIWrapper  # added by Anita Rau April 2025
+from .surgvlp import SurgVLPWrapper  # added by Anita Rau April 2025

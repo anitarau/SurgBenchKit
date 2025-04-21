@@ -1,0 +1,9 @@
+# Task 
+name: heichole_action_recognition
+data: HeiCholeDataloader
+data_config:
+  transform: None
+  data_dir: /pasteur/data/heichole
+label_names: ['grasp', 'hold', 'cut', 'clip']
+clip_eval_mode: 'sigmoid'  # multi-label binary classification
+shots: zero

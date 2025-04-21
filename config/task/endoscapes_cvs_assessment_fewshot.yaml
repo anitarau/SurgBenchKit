@@ -1,0 +1,8 @@
+# Task 
+name: endoscapes_cvs_assessment_fewshot
+data: EndoscapesCVSAssessment
+data_config:
+  transform: None
+  data_dir: /pasteur/data/endoscapes/
+label_names: ['C1', 'C2', 'C3']
+shots: five

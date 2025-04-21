@@ -1,0 +1,8 @@
+# Task 
+name: cholec80_phase_recognition
+data: Cholec80PhaseRecognition
+data_config:
+  data_dir: /pasteur/data/cholec80
+label_names: ['Preparation', 'CalotTriangleDissection', 'ClippingCutting', 'GallbladderDissection', 'GallbladderPackaging', 'CleaningCoagulation', 'GallbladderRetraction']
+clip_eval_mode: 'singlelabel'  # single label multi-class classification
+shots: zero

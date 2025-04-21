@@ -1,0 +1,8 @@
+# Task 
+name: heichole_action_recognition_fewshot
+data: HeiCholeDataloader
+data_config:
+  transform: None
+  data_dir: /pasteur/data/heichole
+label_names: ['grasp', 'hold', 'cut', 'clip']
+shots: one

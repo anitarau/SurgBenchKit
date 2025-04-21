@@ -1,6 +1,10 @@
+# Modified by Anita Rau April 2025
+
 from vlmeval.vlm import *
 from vlmeval.api import *
 from functools import partial
+from vlmeval.inference_surg import *
+from vlmeval.dataset import DresdenAnatomyPresence, EndoscapesCVSAssessment, Cholec80PhaseRecognition, Cholec80ToolRecognition, HeiCholeDataloader, MultiBypass140PhaseRecognition, Cholect45Triplet
 
 PandaGPT_ROOT = None
 MiniGPT4_ROOT = None
@@ -15,6 +19,45 @@ PLLaVA_ROOT = None
 RBDash_ROOT = None
 VITA_ROOT = None
 LLAVA_V1_7B_MODEL_PTH = "Please set your local path to LLaVA-7B-v1.1 here, the model weight is obtained by merging LLaVA delta weight based on vicuna-7b-v1.1 in https://github.com/haotian-liu/LLaVA/blob/main/docs/MODEL_ZOO.md with vicuna-7b-v1.1. "
+
+
+
+model_map = {
+    "infer_data_contrastive": infer_data_contrastive,
+    "eval_data_contrastive": eval_data_contrastive,
+    "infer_data": infer_data,
+    "eval_data": eval_data,
+}
+
+data_map = {
+    "DresdenAnatomyPresence": DresdenAnatomyPresence,
+    "EndoscapesCVSAssessment": EndoscapesCVSAssessment,
+    "Cholec80PhaseRecognition": Cholec80PhaseRecognition,
+    "Cholec80ToolRecognition": Cholec80ToolRecognition,
+    "HeiCholeDataloader": HeiCholeDataloader,
+    "MultiBypass140PhaseRecognition": MultiBypass140PhaseRecognition,
+    "Cholect45Triplet": Cholect45Triplet,
+}
+
+
+class ShellModel:
+    # A shell model that does not load any weights for computing metrics over existing model outputs
+    def __init__(self, name, eval_type=None):
+        if 'llava' in name:
+            name = 'llava-v1.6-vicuna-7b-hf'
+        elif 'Qwen' in name:
+            name = 'Qwen2-VL-7B-Instruct'
+        elif 'Gemini' in name:
+            name = 'gemini-1.5-pro'
+        elif 'GPT' in name:
+            name = "gpt-4o-2024-08-06"
+        self.name = name
+        self.eval_type = eval_type
+        self.model = None
+
+surgical_models = {
+    'SurgVLP': partial(SurgVLPWrapper, model_path='surgvlp/surgvlp-surgeonet-7b'),
+}
 
 video_models = {
     "Video-LLaVA-7B": partial(VideoLLaVA, model_path="LanguageBind/Video-LLaVA-7B"),
@@ -78,6 +121,8 @@ ungrouped = {
     ),
     "Pixtral-12B": partial(Pixtral, model_path="mistralai/Pixtral-12B-2409"),
     "Falcon2-VLM-11B": partial(Falcon2VLM, model_path="tiiuae/falcon-11B-vlm"),
+    'CLIP': partial(CLIPVLMWrapper, model_path='openai/clip-vit-base-patch32'),
+    'OpenCLIP': partial(CLIPOpenAIWrapper, model_path='ViT-B/32'),
 }
 
 o1_key = 'XXX'  # noqa: E501
@@ -1169,6 +1214,7 @@ model_groups = [
     ursa_series,
     gemma_series,
     long_vita_series,
+    surgical_models
 ]
 
 for grp in model_groups:

@@ -4,7 +4,7 @@ gradio
 huggingface_hub
 imageio
 matplotlib
-numpy
+numpy==1.26.4
 omegaconf
 openai
 opencv-python>=4.4.0.46
@@ -29,3 +29,14 @@ transformers
 typing_extensions
 validators
 xlsxwriter
+ftfy
+regex
+pandas
+decord
+scikit-learn
+hydra-core
+google-generativeai
+flash-attn==2.6.3
+qwen-vl-utils
+open_clip_torch
+clip

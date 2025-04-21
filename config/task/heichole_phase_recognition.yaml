@@ -1,0 +1,9 @@
+# Task 
+name: heichole_phase_recognition
+data: HeiCholeDataloader
+data_config:
+  transform: None
+  data_dir: /pasteur/data/heichole
+label_names: ['Preparation', 'CalotTriangleDissection', 'ClippingCutting', 'GallbladderDissection', 'GallbladderPackaging', 'CleaningCoagulation', 'GallbladderRetraction']
+clip_eval_mode: 'singlelabel'  # single label multi-class classification
+shots: zero
