@@ -77,8 +77,8 @@ To add a new dataset or task, you'll need to:
 2. Create a task configuration in `config/task`
 3. Import dataloader in `vlmeval/dataset/__init__.py`
 4. Add dataloader to `data_map` in `vlmeval/config.py`
-5. Add an evaluation loop specific to the dataset to `vlmeval/inference_srug.py`
-6. Depending on whether the default option works for your dataset, add inference loop to `vlmeval/inference_srug.py`
+5. Add an evaluation loop specific to the dataset to `vlmeval/inference_surg.py`
+6. Depending on whether the default option works for your dataset, add inference loop to `vlmeval/inference_surg.py`
 7. Add a prompt to `prompts.py`
 
 
