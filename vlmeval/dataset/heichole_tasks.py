@@ -36,6 +36,9 @@ class HeiCholeDataloader(Dataset):
             self.task_name = 'Instrument'
         elif 'action' in config['name']:
             self.task_name = 'Action'
+        elif 'skill' in config['name']:
+            self.task_name = 'Skill'
+            self.score = config['data_config']['score']
         else:
             raise NotImplementedError
         
@@ -44,6 +47,29 @@ class HeiCholeDataloader(Dataset):
 
     def load_labels(self):
         labels = []
+
+        if self.task_name == 'Skill':
+            ann_paths = os.listdir(os.path.join(self.data_dir, 'Annotations', self.task_name))
+            for ann_path in ann_paths:
+                if 'Dissection' in ann_path:
+                    continue
+                video_name = ann_path.split('_')[0]
+                video_path = os.path.join(self.data_dir, 'videos-skill-dissection', f'{video_name}_dissection.mp4')
+
+                with open(os.path.join(self.data_dir, 'Annotations', self.task_name, ann_path), 'r') as f:
+                    lines = f.readlines()
+                    assert len(lines) == 1
+                    depth_perception, bimanual_dexterity, efficiency, tissue_handling, difficulty = lines[0].strip().split(',')
+                    scores = {'depth_perception': depth_perception,
+                              'bimanual_dexterity': bimanual_dexterity,
+                              'efficiency': efficiency,
+                              'tissue_handling': tissue_handling,
+                              'difficulty': difficulty}
+                    assert self.score in scores.keys()
+
+                    labels.append((video_path, scores[self.score]))
+            return labels
+            
         fps_rate = 25
         if self.few_shot:
             fps_rate = fps_rate * 15

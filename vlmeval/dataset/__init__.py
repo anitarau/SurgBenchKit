@@ -64,6 +64,11 @@ from .multibypass140_phase_recognition import MultiBypass140PhaseRecognition
 from .cholect45 import Cholect45Triplet
 
 
+from .jigsaws_skill_assessment import JIGSAWSSkillAssessment
+from .jigsaws_gesture_classification import JIGSAWSGestureClassification
+from .autolaporo_maneuver_classification import AutoLaparoManeuverClassification
+
+
 class ConcatDataset(ImageBaseDataset):
     # This dataset takes multiple dataset names as input and aggregate them into a single dataset.
     # Each single dataset should not have a field named `SUB_DATASET`
