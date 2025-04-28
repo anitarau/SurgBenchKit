@@ -1,0 +1,11 @@
+# Task 
+name: cholec80_error_classification
+data: ErrorClassification
+data_config:
+  transform: None
+  data_dir: "/pasteur/u/josaklil/data_cache/surgbench_error_clf"
+  ann_dir: "/pasteur/data/soar_wellcome_save/"
+  dataset_name: "Cholec80"
+label_names: ['Bleeding', 'Bile Spillage', 'Thermal Injury', 'Perforation']
+clip_eval_mode: 'singlelabel'  # single label multi-class classification
+shots: zero
