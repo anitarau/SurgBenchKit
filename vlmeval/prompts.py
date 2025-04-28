@@ -469,6 +469,44 @@ def get_prompts(path, task, model):
         PROMPTS[('cholec80_error_classification', 'GeminiPro1-5')] = PROMPTS[('heichole_error_classification', 'GeminiPro1-5')]
         PROMPTS[('cholec80_error_classification', 'GPT4o')] = PROMPTS[('heichole_error_classification', 'GeminiPro1-5')]
 
+        # Heichole Error Detection
+        PROMPTS[('heichole_error_detection', 'GeminiPro1-5')] = 'You are a helpful medical video assistant. \
+        Task: Find where <ERROR_TYPE> occurs in the provided frames from a cholecystectomy video. \
+        The errors include: \
+        - 1. Bleeding is defined as blood flowing or moving from the source of injury that is clearly visible on the screen.\
+        - 2. Bile spillage is defined as containing the first tool tissue interaction that leads to perforation of the gallbladder or biliary ducts and the spillage of bile. \
+        Instructions: Assess these frames and estimate the timestamps (minutes and seconds) of when the error begins and ends. \
+        Assume that the video is recoded at 10 fps and the error can be any duration of time between 0 and 3 minutes. \
+        Use this JSON schema: {"start_time": "00:00", "end_time": "00:00"} and avoid line breaks. \
+        Make sure to give precise timestamps. Only return this JSON.'
+        PROMPTS[('heichole_error_detection', 'Phi-3.5-Vision')] = '''You are an assistant skilled in analyzing surgical video data. Your task is to locate the time span during which a specific error (<ERROR_TYPE>) occurs in a series of frames extracted from a cholecystectomy video. The error definitions are as follows:
+        1. Bleeding: Visible blood flowing or moving from the injury source on screen.
+        2. Bile spillage: The initial tool-tissue interaction that causes perforation of the gallbladder or biliary ducts, resulting in bile leakage.
+        Task: You are provided a series of <NUM_SAMP> frames sampled from a cholecystectomy video. Find the start and end frame numbers of the error. 
+        Return your result using this JSON format (without any line breaks):
+        {"start": int, "end": int}. Only return this JSON.'''
+        PROMPTS[('heichole_error_detection', 'InternVL2-8B')] = PROMPTS[('heichole_error_detection', 'Phi-3.5-Vision')]
+        PROMPTS[('heichole_error_detection', 'GPT4o')] = PROMPTS[('heichole_error_detection', 'Phi-3.5-Vision')]
+        PROMPTS[('heichole_error_detection', 'Qwen2-VL-7B-Instruct')] = '''
+        This video is 3 minutes long.
+        Each frame is associated with a specific timestamp using the format 'mm:ss'.
+        Here are the frames and their timestamps:
+        Frame 0: 00:00
+        Frame 1: 00:51
+        Frame 2: 01:42
+        ...
+        Frame 35: 03:00 (max timestamp)
+        Given the query: '<ERROR_TYPE>', when does the described content occur in the video?
+        Use the 'mm:ss' format for your answer. Return in JSON format: {"start": mm:ss, "end": mm:ss}. 
+        Only return this JSON.'''
+
+        # Cholec80 Error Detection
+        PROMPTS[('cholec80_error_detection', 'GeminiPro1-5')] = PROMPTS[('heichole_error_detection', 'GeminiPro1-5')]
+        PROMPTS[('cholec80_error_detection', 'Phi-3.5-Vision')] = PROMPTS[('heichole_error_detection', 'Phi-3.5-Vision')]
+        PROMPTS[('cholec80_error_detection', 'InternVL2-8B')] = PROMPTS[('heichole_error_detection', 'InternVL2-8B')]
+        PROMPTS[('cholec80_error_detection', 'GPT4o')] = PROMPTS[('heichole_error_detection', 'GPT4o')]
+        PROMPTS[('cholec80_error_detection', 'Qwen2-VL-7B-Instruct')] = PROMPTS[('heichole_error_detection', 'Qwen2-VL-7B-Instruct')]
+
         # Multibypass Phase
         PROMPTS[('multibypass140_phase_recognition', 'GeminiPro1-5')] = 'You are shown an image captured during a laparoscopic gastric bypass surgery. Determine the surgical phase of the image. The possible phases are \
         0: Preparation, 1: Gastric pouch creation, 2: Omentum division, 3: Gastrojejunal anastomosis, 4: Anastomosis test, 5: Jejunal separation, 6:Petersen space closure, 7: Jejunojejunal anastomosis, \
