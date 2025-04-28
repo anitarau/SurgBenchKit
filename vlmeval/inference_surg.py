@@ -597,7 +597,7 @@ def eval_data(
         preds = [np.array(instruments), np.array(verbs), np.array(targets)]
         labels = [np.array(instruments_gt), np.array(verbs_gt), np.array(targets_gt)]
 
-    elif 'heichole' in task['name']:
+    elif 'heichole' in task['name'] and 'skill_assessment' not in task['name']:
         label_map = {idx: label for idx, label in enumerate(task['label_names'])}
         default = np.atleast_1d(np.array(dataset.labels[0][1]) * 0)
         if 'heichole_tool_recognition' in task['name']:
@@ -890,6 +890,23 @@ def eval_data(
         tools_df.to_csv(work_dir + 'metrics_avos_tools_detection_' + model_name.replace('/','') + '_' + name + '.csv', index=False)
 
         return preds, labels
+    
+    elif 'jigsaws' in task['name'] or 'autolaparo' in task['name'] or 'heichole_skill_assessment' in task['name']:
+        label_map = {idx: label for idx, label in enumerate(task['label_names'])}
+        successful_preds = 0
+        for i, pred in enumerate(preds):
+            pattern = '|'.join([re.escape(label) for label in task.label_names])
+            matches = re.findall(pattern, pred)
+            if len(matches) == 1:
+                preds[i] = matches[0]
+                successful_preds += 1
+            elif len(matches) == 0:
+                preds[i] = task.label_names[0]
+            else:
+                preds[i] = matches[-1]
+                successful_preds += 1
+         preds = np.array(preds)
+        labels = np.array(labels)
 
 
     ### compute and display metrics
