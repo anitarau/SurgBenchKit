@@ -101,7 +101,7 @@ def infer_data_video(
     """
     Predicts and evaluates data (video specific), while eval_data only evaluates
     """
-    print('Using infer_data function modifiedfor video data!')
+    print('Using infer_data function modified for video data!')
     # Different models have different attributes:
     if isinstance(model.model, str):
         model_name = model.model
@@ -638,6 +638,56 @@ def eval_data(
             label = task['label_names'].index(all_files_labels[file]) + 1
             labels.append(label)
 
+    elif 'error_detection' in task['name']:
+        extract_error_label = lambda x: (x[0], x[1])
+        label_map = {}
+        labels_dict = {path: (s, e) for path, (s, e, _) in dataset.labels}
+        default = (0, 0)
+        for file in tqdm(all_files):
+            if file not in evaluation_files:
+                preds.append(default)
+            else:
+                with open(file, 'r') as f:
+                    pred = json.load(f)
+                if "Blocked" in pred or "Exception" in pred:
+                    preds.append(default)
+                elif isinstance(pred, dict):
+                    if 'gemini' in model_name:
+                        start_time = pred['start_time']
+                        end_time = pred['end_time']
+                        start_time = (int(start_time.split(':')[0]) * 60 + int(start_time.split(':')[1])) * 10
+                        end_time = (int(end_time.split(':')[0]) * 60 + int(end_time.split(':')[1])) * 10
+                    elif 'Qwen2-VL' in model_name:
+                        start_time = pred['start']
+                        end_time = pred['end']
+                        if len(start_time.split(':')) == 2:
+                            start_time = (int(start_time.split(':')[0]) * 60 + int(start_time.split(':')[1])) * 10
+                        elif len(start_time.split(':')) == 3:
+                            start_time = (int(start_time.split(':')[1]) * 60 + int(start_time.split(':')[2])) * 10
+                        if len(end_time.split(':')) == 2:
+                            end_time = (int(end_time.split(':')[0]) * 60 + int(end_time.split(':')[1])) * 10
+                        elif len(end_time.split(':')) == 3:
+                            end_time = (int(end_time.split(':')[1]) * 60 + int(end_time.split(':')[2])) * 10
+                    else:
+                        if 'gpt-4o' in model_name:
+                            nframes = 35
+                        elif 'Phi-3.5-Vision' in model_name:
+                            nframes = 35
+                        elif 'Qwen2-VL' in model_name:
+                            nframes = 35
+                        elif 'InternVL2' in model_name:
+                            nframes = 70
+                        start_time = int(pred['start'] * (1800 / nframes))
+                        end_time = int(pred['end'] * (1800 / nframes))
+                    preds.append((start_time, end_time))
+                    successful_preds += 1
+                else:
+                    preds.append(default)
+            
+            label = extract_error_label(all_files_labels[file])
+            labels.append(label)
+        task['name'] = task['name'] + '_' + dataset.dataset_name
+
     elif 'multibypass140' in task['name']:
         label_map = {idx: label for idx, label in enumerate(task['label_names'])}
         default = np.atleast_1d(np.array(dataset.labels[0][1]) * 0)
@@ -1124,9 +1174,7 @@ def eval_metrics(
         metrics_df.to_csv(work_dir + 'metrics_' + task['name'] + '_' + model_name.replace('/','') + '_' + name + '.csv', index=False)
         return preds, labels
 
-    if 'error_detection' in task['name']: # TODO is this needed?
-        # print('mIoU: ', mloc_iou(labels, preds))
-        # print('-'*60)
+    if 'error_detection' in task['name']:
         metrics_df = pd.DataFrame({
             'Class': ['Average'],
             'mIoU': [mloc_iou(labels, preds)],

@@ -4,7 +4,7 @@ from vlmeval.vlm import *
 from vlmeval.api import *
 from functools import partial
 from vlmeval.inference_surg import *
-from vlmeval.dataset import DresdenAnatomyPresence, EndoscapesCVSAssessment, Cholec80PhaseRecognition, Cholec80ToolRecognition, HeiCholeDataloader, MultiBypass140PhaseRecognition, Cholect45Triplet, ErrorClassification
+from vlmeval.dataset import DresdenAnatomyPresence, EndoscapesCVSAssessment, Cholec80PhaseRecognition, Cholec80ToolRecognition, HeiCholeDataloader, MultiBypass140PhaseRecognition, Cholect45Triplet, ErrorClassification, ErrorDetection
 
 PandaGPT_ROOT = None
 MiniGPT4_ROOT = None
@@ -39,6 +39,7 @@ data_map = {
     "MultiBypass140PhaseRecognition": MultiBypass140PhaseRecognition,
     "Cholect45Triplet": Cholect45Triplet,
     "ErrorClassification": ErrorClassification,
+    "ErrorDetection": ErrorDetection,
 }
 
 
