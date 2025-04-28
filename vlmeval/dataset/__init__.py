@@ -63,6 +63,7 @@ from .heichole_tasks import HeiCholeDataloader
 from .multibypass140_phase_recognition import MultiBypass140PhaseRecognition
 from .cholect45 import Cholect45Triplet
 from .error_classification import ErrorClassification
+from .error_detection import ErrorDetection
 
 
 class ConcatDataset(ImageBaseDataset):
