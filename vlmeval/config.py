@@ -4,7 +4,7 @@ from vlmeval.vlm import *
 from vlmeval.api import *
 from functools import partial
 from vlmeval.inference_surg import *
-from vlmeval.dataset import DresdenAnatomyPresence, EndoscapesCVSAssessment, Cholec80PhaseRecognition, Cholec80ToolRecognition, HeiCholeDataloader, MultiBypass140PhaseRecognition, Cholect45Triplet
+from vlmeval.dataset import DresdenAnatomyPresence, EndoscapesCVSAssessment, Cholec80PhaseRecognition, Cholec80ToolRecognition, HeiCholeDataloader, MultiBypass140PhaseRecognition, Cholect45Triplet, ErrorClassification, ErrorDetection
 
 PandaGPT_ROOT = None
 MiniGPT4_ROOT = None
@@ -25,6 +25,7 @@ LLAVA_V1_7B_MODEL_PTH = "Please set your local path to LLaVA-7B-v1.1 here, the m
 model_map = {
     "infer_data_contrastive": infer_data_contrastive,
     "eval_data_contrastive": eval_data_contrastive,
+    "infer_data_video": infer_data_video,
     "infer_data": infer_data,
     "eval_data": eval_data,
 }
@@ -37,6 +38,8 @@ data_map = {
     "HeiCholeDataloader": HeiCholeDataloader,
     "MultiBypass140PhaseRecognition": MultiBypass140PhaseRecognition,
     "Cholect45Triplet": Cholect45Triplet,
+    "ErrorClassification": ErrorClassification,
+    "ErrorDetection": ErrorDetection,
 }
 
 

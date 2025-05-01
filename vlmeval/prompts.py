@@ -442,6 +442,71 @@ def get_prompts(path, task, model):
         grasp, hold, cut, or clip. It is possible that the insturment is idle and no action is performed. Aggregate the actions across all instruments. For each action return a boolean indicating if the action is performed by any instrument. \
         Use this JSON schema: {"grasp": bool, "hold": bool, "cut": bool, "clip": bool} and avoid line breaks. ']
 
+        # Heichole Error Classification
+        PROMPTS[('heichole_error_classification', 'Phi-3.5-Vision')] = 'You are a helpful medical video assistant. You will be provided with separate frames uniformaly sampled from a video segment. \
+        Task: classify the surgical error in the video segment. Below are the defined errors: \
+        1. Bleeding \
+        2. Bile spillage \
+        3. Thermal injury \
+        4. Perforation \
+        Instructions: Assess the images carefully and classify the error. The segment only contains one error. Only output the error in a JSON format, eg: {"error_type": 1}.'
+        PROMPTS[('heichole_error_classification', 'InternVL2-8B')] = PROMPTS[('heichole_error_classification', 'Phi-3.5-Vision')]
+        PROMPTS[('heichole_error_classification', 'Qwen2-VL-7B-Instruct')] = PROMPTS[('heichole_error_classification', 'Phi-3.5-Vision')]
+        PROMPTS[('heichole_error_classification', 'GeminiPro1-5')] = 'You are a helpful medical video assistant. \
+        Task: Classify which type of error occurs in the provided frames from a cholecystectomy video. \
+        The errors include: \
+        - 1. Bleeding is defined as blood flowing/moving from a source of injury that is clearly visible on the screen.\
+        - 2. Bile spillage is defined as bile spilling out of the gallbladder or biliary ducts. \
+        - 3. Thermal injury is defined as an unintentional burn that leads to injury of non-target tissue. \
+        - 4. Perforation is defined any tool tissue interaction that leads to perforation of the gallbladder or biliary ducts and the spillage of bile. \
+        Use this JSON schema: {"error_type": int} with the type of error (1 for Bleeding, 2 for Bile Spillage, 3 for Thermal Injury, 4 for Perforation) and avoid line breaks. Only return this JSON.'
+        PROMPTS[('heichole_error_classification', 'GPT4o')] = PROMPTS[('heichole_error_classification', 'GeminiPro1-5')]
+        
+        # Cholec80 Error Classification
+        PROMPTS[('cholec80_error_classification', 'Phi-3.5-Vision')] = PROMPTS[('heichole_error_classification', 'Phi-3.5-Vision')]
+        PROMPTS[('cholec80_error_classification', 'InternVL2-8B')] = PROMPTS[('heichole_error_classification', 'Phi-3.5-Vision')]
+        PROMPTS[('cholec80_error_classification', 'Qwen2-VL-7B-Instruct')] = PROMPTS[('heichole_error_classification', 'Phi-3.5-Vision')]
+        PROMPTS[('cholec80_error_classification', 'GeminiPro1-5')] = PROMPTS[('heichole_error_classification', 'GeminiPro1-5')]
+        PROMPTS[('cholec80_error_classification', 'GPT4o')] = PROMPTS[('heichole_error_classification', 'GeminiPro1-5')]
+
+        # Heichole Error Detection
+        PROMPTS[('heichole_error_detection', 'GeminiPro1-5')] = 'You are a helpful medical video assistant. \
+        Task: Find where <ERROR_TYPE> occurs in the provided frames from a cholecystectomy video. \
+        The errors include: \
+        - 1. Bleeding is defined as blood flowing or moving from the source of injury that is clearly visible on the screen.\
+        - 2. Bile spillage is defined as containing the first tool tissue interaction that leads to perforation of the gallbladder or biliary ducts and the spillage of bile. \
+        Instructions: Assess these frames and estimate the timestamps (minutes and seconds) of when the error begins and ends. \
+        Assume that the video is recoded at 10 fps and the error can be any duration of time between 0 and 3 minutes. \
+        Use this JSON schema: {"start_time": "00:00", "end_time": "00:00"} and avoid line breaks. \
+        Make sure to give precise timestamps. Only return this JSON.'
+        PROMPTS[('heichole_error_detection', 'Phi-3.5-Vision')] = '''You are an assistant skilled in analyzing surgical video data. Your task is to locate the time span during which a specific error (<ERROR_TYPE>) occurs in a series of frames extracted from a cholecystectomy video. The error definitions are as follows:
+        1. Bleeding: Visible blood flowing or moving from the injury source on screen.
+        2. Bile spillage: The initial tool-tissue interaction that causes perforation of the gallbladder or biliary ducts, resulting in bile leakage.
+        Task: You are provided a series of <NUM_SAMP> frames sampled from a cholecystectomy video. Find the start and end frame numbers of the error. 
+        Return your result using this JSON format (without any line breaks):
+        {"start": int, "end": int}. Only return this JSON.'''
+        PROMPTS[('heichole_error_detection', 'InternVL2-8B')] = PROMPTS[('heichole_error_detection', 'Phi-3.5-Vision')]
+        PROMPTS[('heichole_error_detection', 'GPT4o')] = PROMPTS[('heichole_error_detection', 'Phi-3.5-Vision')]
+        PROMPTS[('heichole_error_detection', 'Qwen2-VL-7B-Instruct')] = '''
+        This video is 3 minutes long.
+        Each frame is associated with a specific timestamp using the format 'mm:ss'.
+        Here are the frames and their timestamps:
+        Frame 0: 00:00
+        Frame 1: 00:51
+        Frame 2: 01:42
+        ...
+        Frame 35: 03:00 (max timestamp)
+        Given the query: '<ERROR_TYPE>', when does the described content occur in the video?
+        Use the 'mm:ss' format for your answer. Return in JSON format: {"start": mm:ss, "end": mm:ss}. 
+        Only return this JSON.'''
+
+        # Cholec80 Error Detection
+        PROMPTS[('cholec80_error_detection', 'GeminiPro1-5')] = PROMPTS[('heichole_error_detection', 'GeminiPro1-5')]
+        PROMPTS[('cholec80_error_detection', 'Phi-3.5-Vision')] = PROMPTS[('heichole_error_detection', 'Phi-3.5-Vision')]
+        PROMPTS[('cholec80_error_detection', 'InternVL2-8B')] = PROMPTS[('heichole_error_detection', 'InternVL2-8B')]
+        PROMPTS[('cholec80_error_detection', 'GPT4o')] = PROMPTS[('heichole_error_detection', 'GPT4o')]
+        PROMPTS[('cholec80_error_detection', 'Qwen2-VL-7B-Instruct')] = PROMPTS[('heichole_error_detection', 'Qwen2-VL-7B-Instruct')]
+
         # Multibypass Phase
         PROMPTS[('multibypass140_phase_recognition', 'GeminiPro1-5')] = 'You are shown an image captured during a laparoscopic gastric bypass surgery. Determine the surgical phase of the image. The possible phases are \
         0: Preparation, 1: Gastric pouch creation, 2: Omentum division, 3: Gastrojejunal anastomosis, 4: Anastomosis test, 5: Jejunal separation, 6:Petersen space closure, 7: Jejunojejunal anastomosis, \
@@ -485,60 +550,62 @@ def get_prompts(path, task, model):
         PROMPTS[('cholect45_triplet_recognition', 'paligemma-3b-mix-448')] = ["Answer en Is there a grasper in this image?", "Is there a bipolar in this image?", "Is there a hook in this image?", "Are there scissors in this image?", "Is there a clipper in this image?", "Is there a irrigator in this image?", "Is there a specimen bag in this image?"]
 
         ## for SurgVLP
-        triplet_file = path + 'dict/triplet.txt'
-        triplet_prompts = []
-        with open(triplet_file, 'r') as f:
-                lines = f.readlines()
-                for line in lines:
-                        line = line.replace('cut', 'cutt').replace('clip', 'clipp')
-                        if "null_instrument" in line:
-                                triplet_prompts.append("I don't use tools.")
-                        elif "null_verb" in line:
-                                line = line.strip().split(':')[1].split(',')
-                                if "scissors" in line:
-                                        triplet_prompts.append("I use scissors that do not do anything.")
+        if model == 'SurgVLP' and task == 'cholect45_triplet_recognition':
+                triplet_file = path + 'dict/triplet.txt'
+                triplet_prompts = []
+                with open(triplet_file, 'r') as f:
+                        lines = f.readlines()
+                        for line in lines:
+                                line = line.replace('cut', 'cutt').replace('clip', 'clipp')
+                                if "null_instrument" in line:
+                                        triplet_prompts.append("I don't use tools.")
+                                elif "null_verb" in line:
+                                        line = line.strip().split(':')[1].split(',')
+                                        if "scissors" in line:
+                                                triplet_prompts.append("I use scissors that do not do anything.")
+                                        elif "irrigator" in line:
+                                                triplet_prompts.append("I use an irrigator that does not do anything.")
+                                        else:
+                                                triplet_prompts.append("I use a %s that is not doing anything." % line[0])
+                                elif "scissors" in line:
+                                        line = line.strip().split(':')[1].split(',')
+                                        triplet_prompts.append("I use scissors to %s the %s." % (line[1], line[2]))
                                 elif "irrigator" in line:
-                                        triplet_prompts.append("I use an irrigator that does not do anything.")
+                                        line = line.strip().split(':')[1].split(',')
+                                        triplet_prompts.append("I use an irrigator to %s the %s." % (line[1], line[2]))
                                 else:
-                                        triplet_prompts.append("I use a %s that is not doing anything." % line[0])
-                        elif "scissors" in line:
-                                line = line.strip().split(':')[1].split(',')
-                                triplet_prompts.append("I use scissors to %s the %s." % (line[1], line[2]))
-                        elif "irrigator" in line:
-                                line = line.strip().split(':')[1].split(',')
-                                triplet_prompts.append("I use an irrigator to %s the %s." % (line[1], line[2]))
-                        else:
-                                line = line.strip().split(':')[1].split(',')
-                                triplet_prompts.append("I use a %s to %s the %s." % (line[0], line[1], line[2]))
-        PROMPTS[('cholect45_triplet_recognition', 'SurgVLP')] = triplet_prompts
+                                        line = line.strip().split(':')[1].split(',')
+                                        triplet_prompts.append("I use a %s to %s the %s." % (line[0], line[1], line[2]))
+                PROMPTS[('cholect45_triplet_recognition', 'SurgVLP')] = triplet_prompts
 
         ## for CLIP
-        triplet_file = path + 'dict/triplet.txt'
-        triplet_prompts = []
-        with open(triplet_file, 'r') as f:
-                lines = f.readlines()
-                for line in lines:
-                        line = line.replace('cut', 'cutt').replace('clip', 'clipp')
-                        if "null_instrument" in line:
-                                triplet_prompts.append("A surgical scene without any tools.")
-                        elif "null_verb" in line:
-                                line = line.strip().split(':')[1].split(',')
-                                if "scissors" in line:
-                                        triplet_prompts.append("Scissors that are not touching any tissue.")
+        if model == 'CLIP' and task == 'cholect45_triplet_recognition':
+                triplet_file = path + 'dict/triplet.txt'
+                triplet_prompts = []
+                with open(triplet_file, 'r') as f:
+                        lines = f.readlines()
+                        for line in lines:
+                                line = line.replace('cut', 'cutt').replace('clip', 'clipp')
+                                if "null_instrument" in line:
+                                        triplet_prompts.append("A surgical scene without any tools.")
+                                elif "null_verb" in line:
+                                        line = line.strip().split(':')[1].split(',')
+                                        if "scissors" in line:
+                                                triplet_prompts.append("Scissors that are not touching any tissue.")
+                                        elif "irrigator" in line:
+                                                triplet_prompts.append("An irrigator that is not touching any tissue.")
+                                        else:
+                                                triplet_prompts.append("A %s that is not touching any tissue." % line[0])
+                                elif "scissors" in line:
+                                        line = line.strip().split(':')[1].split(',')
+                                        triplet_prompts.append("Scissors are %sing the %s." % (line[1].strip('e'), line[2]))
                                 elif "irrigator" in line:
-                                        triplet_prompts.append("An irrigator that is not touching any tissue.")
+                                        line = line.strip().split(':')[1].split(',')
+                                        triplet_prompts.append("An irrigator is %sing the %s." % (line[1].strip('e'), line[2]))
                                 else:
-                                        triplet_prompts.append("A %s that is not touching any tissue." % line[0])
-                        elif "scissors" in line:
-                                line = line.strip().split(':')[1].split(',')
-                                triplet_prompts.append("Scissors are %sing the %s." % (line[1].strip('e'), line[2]))
-                        elif "irrigator" in line:
-                                line = line.strip().split(':')[1].split(',')
-                                triplet_prompts.append("An irrigator is %sing the %s." % (line[1].strip('e'), line[2]))
-                        else:
-                                line = line.strip().split(':')[1].split(',')
-                                triplet_prompts.append("A %s is %sing the %s." % (line[0], line[1].strip('e'), line[2]))
-        PROMPTS[('cholect45_triplet_recognition', 'CLIP')] = triplet_prompts
+                                        line = line.strip().split(':')[1].split(',')
+                                        triplet_prompts.append("A %s is %sing the %s." % (line[0], line[1].strip('e'), line[2]))
+                PROMPTS[('cholect45_triplet_recognition', 'CLIP')] = triplet_prompts
 
         # copy remaining prompts to other models
         for tuple in list(PROMPTS):

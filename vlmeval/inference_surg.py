@@ -88,6 +88,134 @@ def infer_data(
     return preds, labels
 
 
+def infer_data_video(
+    model, 
+    work_dir, 
+    name, 
+    dataset, 
+    task, 
+    prompt, 
+    nframe=8,  
+    **kwargs
+):
+    """
+    Predicts and evaluates data (video specific), while eval_data only evaluates
+    """
+    print('Using infer_data function modified for video data!')
+    # Different models have different attributes:
+    if isinstance(model.model, str):
+        model_name = model.model
+    elif hasattr(model, 'model_path'):
+        model_name = model.model_path.split('/')[1]
+    else:
+        model_name = model.name
+    write_dir = osp.join(work_dir, task['name'], model_name, name)
+    if not osp.exists(write_dir):
+        os.makedirs(write_dir)
+
+    # save prompt as txt
+    with open(osp.join(write_dir, 'prompt.txt'), 'w') as f:
+        if isinstance(prompt, list):
+            f.write(','.join(prompt))
+        else:
+            f.write(prompt)
+    
+    # keep track of dataset name
+    dataset_name = dataset.dataset_name
+    print(f'Video model: <{model_name}> for dataset: <{dataset_name}>')
+    print('-'*60)
+
+    # choose zero-shot or few-shot prompt
+    if 'fewshot' in task['name']:
+        def eval_model(video_path, prompt):
+            raise NotImplementedError('Few-shot prompt not implemented for video data!')
+    
+    elif (
+        'Phi-3.5-Vision' in model_name or \
+        'InternVL2' in model_name or \
+        'Qwen2-VL' in model_name or \
+        'gpt-4o' in model_name
+    ):  
+        def eval_model(video_path, prompt):
+            if 'gpt-4o' in model_name:
+                nframes = 35
+            elif 'Phi-3.5-Vision' in model_name:
+                nframes = 35
+            elif 'Qwen2-VL' in model_name:
+                nframes = 35
+            elif 'InternVL2' in model_name:
+                nframes = 70
+            prompt = prompt.replace('<NUM_SAMP>', str(nframes))
+            message = [dict(type='text', value=prompt)]
+
+            # write frames to a temp dir for inference
+            tmp_frame_dir = osp.join(write_dir, osp.basename(video_path['path']))
+            os.makedirs(tmp_frame_dir, exist_ok=True)
+            
+            # check if frames are already extracted
+            if len(os.listdir(tmp_frame_dir)) != nframes:
+                print(
+                    'WARNING: Re-extracting frames for video: ', video_path['path']
+                )
+                shutil.rmtree(tmp_frame_dir)
+                os.makedirs(tmp_frame_dir)
+                
+                video = decord.VideoReader(video_path['path'])
+                frame_indices = list(range(0, len(video), len(video) // nframes))[:nframes]  
+                frames = list(video.get_batch(frame_indices).asnumpy())
+
+                for frame_idx, frame in tqdm(zip(frame_indices, frames), total=nframes, desc='Saving frames'):
+                    frame_path = osp.join(tmp_frame_dir, f'frame-{frame_idx}.jpg')
+                    if not osp.exists(frame_path):
+                        frame_pil = Image.fromarray(frame)
+                        target_size = (854, 480)    # default is 480p 
+                        frame_pil.thumbnail(target_size, Image.Resampling.LANCZOS)
+                        frame_pil.save(frame_path)
+                    message.append(dict(type='image', value=frame_path))
+            else:
+                for frame in os.listdir(tmp_frame_dir):
+                    message.append(dict(type='image', value=osp.join(tmp_frame_dir, frame)))
+            return model.generate(message=message, dataset=dataset_name)
+    
+    else:
+        def eval_model(video_path, prompt):
+            message = [
+                dict(type='text', value=prompt), 
+                dict(type='video', value=video_path['path'])
+            ]
+            return model.generate(message=message, dataset=dataset_name)
+
+    # as API calls often fail, we save all predictions as json files, and then read those in an eval loop
+    for video_path, label in tqdm(dataset):
+        out_file = osp.join(write_dir, f'{"-".join(video_path["path"].split("/")[-3:])}.json')
+        if osp.exists(out_file) and not kwargs['override_outputs']:
+            continue
+        else:
+            if osp.exists(out_file):
+                os.remove(out_file)
+            try:
+                if 'error_detection' in task['name']:
+                    prompt = prompt.replace('<ERROR_TYPE>', label['error_type'])
+                ret = eval_model(video_path, prompt)
+                if isinstance(ret, int):  # returns int if gemini blocks the request (e.g. image contains a lot of blood)
+                    dump('Blocked: ' + str(ret), out_file)
+                    continue
+                else: 
+                    # clean up result:
+                    ret = ret.strip("```").strip("json").replace("\n","")
+                    pred = json.loads(ret)
+                    dump(pred, out_file)
+            
+            except Exception as e:
+                print('Exception: ' + str(e))
+                dump('Exception: ' + str(e), out_file)
+                continue
+    print('-'*60)
+
+    preds, labels = eval_data(model, work_dir, name, dataset, task)
+    return preds, labels
+
+
 def infer_data_paligemma(
     model, 
     work_dir, 
@@ -484,6 +612,81 @@ def eval_data(
             label = all_files_labels[file]
             label_fixed = np.delete(label, -2)  # cut null class
             labels.append(label_fixed)
+
+    elif 'error_classification' in task['name']:
+        label_map = {idx: label for idx, label in enumerate(task['label_names'])}
+        labels_dict = {filename: label_array for filename, label_array in dataset.labels}
+        default = 0
+        for file in tqdm(all_files):
+            if file not in evaluation_files:
+                preds.append(default)
+            else:
+                with open(file, 'r') as f:
+                    pred = json.load(f)
+                if isinstance(pred, int):
+                    preds.append(pred)
+                elif "Blocked" in pred or "Exception" in pred:
+                    preds.append(default)
+                elif isinstance(pred, dict):
+                    preds.append(list(pred.values())[0])
+                    successful_preds += 1
+                else:
+                    # get only the number using regex
+                    preds.append(int(re.search(r'\d+', pred).group()))
+                    successful_preds += 1
+
+            label = task['label_names'].index(all_files_labels[file]) + 1
+            labels.append(label)
+
+    elif 'error_detection' in task['name']:
+        extract_error_label = lambda x: (x[0], x[1])
+        label_map = {}
+        labels_dict = {path: (s, e) for path, (s, e, _) in dataset.labels}
+        default = (0, 0)
+        for file in tqdm(all_files):
+            if file not in evaluation_files:
+                preds.append(default)
+            else:
+                with open(file, 'r') as f:
+                    pred = json.load(f)
+                if "Blocked" in pred or "Exception" in pred:
+                    preds.append(default)
+                elif isinstance(pred, dict):
+                    if 'gemini' in model_name:
+                        start_time = pred['start_time']
+                        end_time = pred['end_time']
+                        start_time = (int(start_time.split(':')[0]) * 60 + int(start_time.split(':')[1])) * 10
+                        end_time = (int(end_time.split(':')[0]) * 60 + int(end_time.split(':')[1])) * 10
+                    elif 'Qwen2-VL' in model_name:
+                        start_time = pred['start']
+                        end_time = pred['end']
+                        if len(start_time.split(':')) == 2:
+                            start_time = (int(start_time.split(':')[0]) * 60 + int(start_time.split(':')[1])) * 10
+                        elif len(start_time.split(':')) == 3:
+                            start_time = (int(start_time.split(':')[1]) * 60 + int(start_time.split(':')[2])) * 10
+                        if len(end_time.split(':')) == 2:
+                            end_time = (int(end_time.split(':')[0]) * 60 + int(end_time.split(':')[1])) * 10
+                        elif len(end_time.split(':')) == 3:
+                            end_time = (int(end_time.split(':')[1]) * 60 + int(end_time.split(':')[2])) * 10
+                    else:
+                        if 'gpt-4o' in model_name:
+                            nframes = 35
+                        elif 'Phi-3.5-Vision' in model_name:
+                            nframes = 35
+                        elif 'Qwen2-VL' in model_name:
+                            nframes = 35
+                        elif 'InternVL2' in model_name:
+                            nframes = 70
+                        start_time = int(pred['start'] * (1800 / nframes))
+                        end_time = int(pred['end'] * (1800 / nframes))
+                    preds.append((start_time, end_time))
+                    successful_preds += 1
+                else:
+                    preds.append(default)
+            
+            label = extract_error_label(all_files_labels[file])
+            labels.append(label)
+        task['name'] = task['name'] + '_' + dataset.dataset_name
 
     elif 'multibypass140' in task['name']:
         label_map = {idx: label for idx, label in enumerate(task['label_names'])}
@@ -988,9 +1191,7 @@ def eval_metrics(
         metrics_df.to_csv(work_dir + 'metrics_' + task['name'] + '_' + model_name.replace('/','') + '_' + name + '.csv', index=False)
         return preds, labels
 
-    if 'error_detection' in task['name']: # TODO is this needed?
-        # print('mIoU: ', mloc_iou(labels, preds))
-        # print('-'*60)
+    if 'error_detection' in task['name']:
         metrics_df = pd.DataFrame({
             'Class': ['Average'],
             'mIoU': [mloc_iou(labels, preds)],
@@ -1000,13 +1201,6 @@ def eval_metrics(
         print('-'*60)
         metrics_df.to_csv(work_dir + 'metrics_' + task['name'] + '_' + model_name.replace('/','') + '_' + name + '.csv', index=False)
         return preds, labels
-
-    if 'error_classification' in task['name']: # TODO is this needed?
-        print('-'*100)
-        print('labels: ', labels)
-        print('preds: ', preds)
-        print('mAcc: ', accuracy(labels.flatten(), preds.flatten()))
-        print('-'*100)
 
     ## recall, precision, f1, jaccard
     recall_values = recall(labels, preds, average=None)
@@ -1036,6 +1230,8 @@ def eval_metrics(
             elif np.ndim(preds) == 1:
                 preds = preds.reshape(-1,1)
         map_ids = np.unique([labels, preds])
+    elif 'error_classification' in task['name']:
+        map_ids = np.unique([labels, preds]) - 1
     else:
         map_ids = range(len(label_map))
 
