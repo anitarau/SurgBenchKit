@@ -148,33 +148,54 @@ def infer_data_video(
             prompt = prompt.replace('<NUM_SAMP>', str(nframes))
             message = [dict(type='text', value=prompt)]
 
-            # write frames to a temp dir for inference
-            tmp_frame_dir = osp.join(write_dir, osp.basename(video_path['path']))
-            os.makedirs(tmp_frame_dir, exist_ok=True)
-            
-            # check if frames are already extracted
-            if len(os.listdir(tmp_frame_dir)) != nframes:
-                print(
-                    'WARNING: Re-extracting frames for video: ', video_path['path']
-                )
-                shutil.rmtree(tmp_frame_dir)
-                os.makedirs(tmp_frame_dir)
-                
-                video = decord.VideoReader(video_path['path'])
-                frame_indices = list(range(0, len(video), len(video) // nframes))[:nframes]  
-                frames = list(video.get_batch(frame_indices).asnumpy())
 
-                for frame_idx, frame in tqdm(zip(frame_indices, frames), total=nframes, desc='Saving frames'):
-                    frame_path = osp.join(tmp_frame_dir, f'frame-{frame_idx}.jpg')
-                    if not osp.exists(frame_path):
-                        frame_pil = Image.fromarray(frame)
-                        target_size = (854, 480)    # default is 480p 
-                        frame_pil.thumbnail(target_size, Image.Resampling.LANCZOS)
-                        frame_pil.save(frame_path)
-                    message.append(dict(type='image', value=frame_path))
+            frames_presaved = 'jigsaws' in task['name'] or 'autolaparo' in task['name'] or 'heichole_skill_assessment' in task['name']
+            if frames_presaved:
+                # assume frames are already saved
+                if 'jigsaws_skill_assessment' in task.name:
+                    frame_dir = '/'.join(video_path.split('/')[-3:]).replace('jigsaws_', '')
+                    frame_dir = os.path.join(f'../data/jigsaws_skill_assessment', frame_dir)
+                    frame_dir = frame_dir.replace('.mp4', '_images')
+                else:
+                    frame_dir = video_path.replace('.mp4', '_images')
+                
+                # NOTE: does not follow nframes, rather based on the saved presaved frame count
+                num_frames = sum(1 for f in os.listdir(frame_dir) if os.path.isfile(os.path.join(frame_dir, f)))
+                frame_idxs = list(range(num_frames))
+                # can sample frames here if it does not fit in memory
+
+                for frame_i in frame_idxs:
+                    im = os.path.join(frame_dir, f'frame-{frame_i}.jpg')
+                    message.append(dict(type='image', value=im))
+
             else:
-                for frame in os.listdir(tmp_frame_dir):
-                    message.append(dict(type='image', value=osp.join(tmp_frame_dir, frame)))
+                # write frames to a temp dir for inference
+                tmp_frame_dir = osp.join(write_dir, osp.basename(video_path['path']))
+                os.makedirs(tmp_frame_dir, exist_ok=True)
+                
+                # check if frames are already extracted
+                if len(os.listdir(tmp_frame_dir)) != nframes:
+                    print(
+                        'WARNING: Re-extracting frames for video: ', video_path['path']
+                    )
+                    shutil.rmtree(tmp_frame_dir)
+                    os.makedirs(tmp_frame_dir)
+                    
+                    video = decord.VideoReader(video_path['path'])
+                    frame_indices = list(range(0, len(video), len(video) // nframes))[:nframes]  
+                    frames = list(video.get_batch(frame_indices).asnumpy())
+
+                    for frame_idx, frame in tqdm(zip(frame_indices, frames), total=nframes, desc='Saving frames'):
+                        frame_path = osp.join(tmp_frame_dir, f'frame-{frame_idx}.jpg')
+                        if not osp.exists(frame_path):
+                            frame_pil = Image.fromarray(frame)
+                            target_size = (854, 480)    # default is 480p 
+                            frame_pil.thumbnail(target_size, Image.Resampling.LANCZOS)
+                            frame_pil.save(frame_path)
+                        message.append(dict(type='image', value=frame_path))
+                else:
+                    for frame in os.listdir(tmp_frame_dir):
+                        message.append(dict(type='image', value=osp.join(tmp_frame_dir, frame)))
             return model.generate(message=message, dataset=dataset_name)
     
     else:
@@ -202,8 +223,12 @@ def infer_data_video(
                     continue
                 else: 
                     # clean up result:
-                    ret = ret.strip("```").strip("json").replace("\n","")
-                    pred = json.loads(ret)
+                    if 'jigsaws' in task['name'] or 'autolaparo' in task['name'] or 'heichole_skill_assessment' in task['name']:
+                        # slightly different format based on prompt
+                        pred = ret
+                    else:
+                        ret = ret.strip("```").strip("json").replace("\n","")
+                        pred = json.loads(ret)
                     dump(pred, out_file)
             
             except Exception as e:
@@ -1108,7 +1133,7 @@ def eval_data(
             else:
                 preds[i] = matches[-1]
                 successful_preds += 1
-         preds = np.array(preds)
+        preds = np.array(preds)
         labels = np.array(labels)
 
 

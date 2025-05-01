@@ -625,4 +625,185 @@ def get_prompts(path, task, model):
                         pass
                                 
         
+        # respect for tissue (default)
+        PROMPTS[('jigsaws_skill_assessment', 'Qwen2-VL-7B-Instruct')] = 'You are a helpful medical video assistant. \
+        Task: assess the respect for tissue on a scale from 1 to 5. Use the following criteria to output the score: \
+        1-Frequently used unnecessary force on tissue; \
+        3-Careful tissue handling but occasionally caused inadvertent damage; \
+        5-Consistent appropriate tissue handling; \
+        Instructions: assess the video carefully, and respond with the respect for tissue score. Only output the score.'
+        PROMPTS[('jigsaws_skill_assessment', 'Phi-3.5-Vision')] = 'You are a helpful medical video assistant. You will be provided with separate frames uniformaly sampled from a video. \
+        Task: assess the respect for tissue on a scale from 1 to 5. Use the following criteria to output the score: \
+        1-Frequently used unnecessary force on tissue; \
+        3-Careful tissue handling but occasionally caused inadvertent damage; \
+        5-Consistent appropriate tissue handling; \
+        Instructions: assess the video carefully, and respond with the respect for tissue score. Only output the score.'
+        # suture needle handling
+        PROMPTS[('jigsaws_skill_assessment_suture_needle_handling', 'Qwen2-VL-7B-Instruct')] = 'You are a helpful medical video assistant. \
+        Task: assess the suture / needle handling on a scale from 1 to 5. Use the following criteria to output the score: \
+        1-Awkward and unsure with repeated entanglement and poor knot tying; \
+        3-Majority of knots placed correctly with appropriate tension; \
+        5-Excellent suture control \
+        Instructions: assess the video carefully, and respond with the suture / needle handling score. Only output the score.'
+        PROMPTS[('jigsaws_skill_assessment_suture_needle_handling', 'Phi-3.5-Vision')] = 'You are a helpful medical video assistant. You will be provided with separate frames uniformaly sampled from a video. \
+        Task: assess the suture / needle handling on a scale from 1 to 5. Use the following criteria to output the score: \
+        1-Awkward and unsure with repeated entanglement and poor knot tying; \
+        3-Majority of knots placed correctly with appropriate tension; \
+        5-Excellent suture control \
+        Instructions: assess the video carefully, and respond with the suture / needle handling score. Only output the score.'
+        # time and motion
+        PROMPTS[('jigsaws_skill_assessment_time_and_motion', 'Qwen2-VL-7B-Instruct')] = 'You are a helpful medical video assistant. \
+        Task: assess the time and motion on a scale from 1 to 5. Use the following criteria to output the score: \
+        1-Made unnecessary moves; \
+        3-Efficient time/motion but some unnecessary moves; \
+        5-Clear economy of movement and maximum efficiency \
+        Instructions: assess the video carefully, and respond with the time and motion score. Only output the score.'
+        PROMPTS[('jigsaws_skill_assessment_time_and_motion', 'Phi-3.5-Vision')] = 'You are a helpful medical video assistant. You will be provided with separate frames uniformaly sampled from a video. \
+        Task: assess the time and motion on a scale from 1 to 5. Use the following criteria to output the score: \
+        1-Made unnecessary moves; \
+        3-Efficient time/motion but some unnecessary moves; \
+        5-Clear economy of movement and maximum efficiency \
+        Instructions: assess the video carefully, and respond with the time and motion score. Only output the score.'
+        # flow of operation
+        PROMPTS[('jigsaws_skill_assessment_flow_of_operation', 'Qwen2-VL-7B-Instruct')] = 'You are a helpful medical video assistant. \
+        Task: assess the flow of operation on a scale from 1 to 5. Use the following criteria to output the score: \
+        1-Frequently interrupted flow to discuss the next move; \
+        3-Demonstrated some forward planning and reasonable procedure progression; \
+        5-Obviously planned course of operation with efficient transitions between moves; \
+        Instructions: assess the video carefully, and respond with the flow of operation score. Only output the score.'
+        PROMPTS[('jigsaws_skill_assessment_flow_of_operation', 'Phi-3.5-Vision')] = 'You are a helpful medical video assistant. You will be provided with separate frames uniformaly sampled from a video. \
+        Task: assess the flow of operation on a scale from 1 to 5. Use the following criteria to output the score: \
+        1-Frequently interrupted flow to discuss the next move; \
+        3-Demonstrated some forward planning and reasonable procedure progression; \
+        5-Obviously planned course of operation with efficient transitions between moves; \
+        Instructions: assess the video carefully, and respond with the flow of operation score. Only output the score.'
+
+        PROMPTS[('jigsaws_gesture_classification', 'Qwen2-VL-7B-Instruct')] = 'You are a helpful medical video assistant. \
+        Task: classify the gesture of the surgical activity video segment. Below are the defined gestures: \
+        G1 Reaching for needle with right hand; \
+        G2 Positioning needle; \
+        G3 Pushing needle through tissue; \
+        G4 Transferring needle from left to right; \
+        G5 Moving to center with needle in grip; \
+        G6 Pulling suture with left hand; \
+        G7 Pulling suture with right hand; \
+        G8 Orienting needle; \
+        G9 Using right hand to help tighten suture; \
+        G10 Loosening more suture; \
+        G11 Dropping suture at end and moving to end points; \
+        G12 Reaching for needle with left hand; \
+        G13 Making C loop around right hand; \
+        G14 Reaching for suture with right hand; \
+        G15 Pulling suture with both hands.; \
+        Instructions: Assess the video segment carefully and classify the gesture. The segment only contains one gesture. Only output the gesture, eg: G1'
+        PROMPTS[('jigsaws_gesture_classification', 'Phi-3.5-Vision')] = 'You are a helpful medical video assistant. You will be provided with separate frames uniformaly sampled from a video segment. \
+        Task: classify the gesture of the surgical activity video segment. Below are the defined gestures: \
+        G1 Reaching for needle with right hand; \
+        G2 Positioning needle; \
+        G3 Pushing needle through tissue; \
+        G4 Transferring needle from left to right; \
+        G5 Moving to center with needle in grip; \
+        G6 Pulling suture with left hand; \
+        G7 Pulling suture with right hand; \
+        G8 Orienting needle; \
+        G9 Using right hand to help tighten suture; \
+        G10 Loosening more suture; \
+        G11 Dropping suture at end and moving to end points; \
+        G12 Reaching for needle with left hand; \
+        G13 Making C loop around right hand; \
+        G14 Reaching for suture with right hand; \
+        G15 Pulling suture with both hands.; \
+        Instructions: Assess the images carefully and classify the gesture. The segment only contains one gesture. Only output the gesture, eg: G1.'
+
+        # tissue handling (default)
+        PROMPTS[('heichole_skill_assessment', 'Qwen2-VL-7B-Instruct')] = 'You are a helpful medical video assistant. \
+        Task: assess the tissue handling of a laparoscopic cholecystectomy. It is scored on a scale from 1 to 5. Use the following criteria to output the score: \
+        1. Rough movements, tears tissue, injures adjacent structures, poor grasper control, grasper frequently slips; \
+        3. Handles tissues reasonably well, minor trauma to adjacent tissue (ie, occasional unnecessary bleeding or slipping of the grasper); \
+        5. Handles tissues well, applies appropriate traction, negligible injury to adjacent structures; \
+        Instructions: assess the video carefully, and respond with the respect for tissue score. Only output the score.'
+        PROMPTS[('heichole_skill_assessment', 'Phi-3.5-Vision')] = 'You are a helpful medical video assistant. You will be provided with separate frames uniformaly sampled from a video. \
+        Task: assess the tissue handling of a laparoscopic cholecystectomy. It is scored on a scale from 1 to 5. Use the following criteria to output the score: \
+        1. Rough movements, tears tissue, injures adjacent structures, poor grasper control, grasper frequently slips; \
+        3. Handles tissues reasonably well, minor trauma to adjacent tissue (ie, occasional unnecessary bleeding or slipping of the grasper); \
+        5. Handles tissues well, applies appropriate traction, negligible injury to adjacent structures; \
+        Instructions: assess the video carefully, and respond with the respect for tissue score. Only output the score.'
+        # depth perception
+        PROMPTS[('heichole_skill_assessment_depth_perception', 'Qwen2-VL-7B-Instruct')] = 'You are a helpful medical video assistant. \
+        Task: assess the depth perception of a laparoscopic cholecystectomy. It is scored on a scale from 1 to 5. Use the following criteria to output the score: \
+        1. Constantly overshoots target, wide swings, slow to correct; \
+        3. Some overshooting or missing of target, but quick to correct; \
+        5. Accurately directs instruments in the correct plane to target; \
+        Instructions: assess the video carefully, and respond with the depth perception score. Only output the score.'
+        PROMPTS[('heichole_skill_assessment_depth_perception', 'Phi-3.5-Vision')] = 'You are a helpful medical video assistant. You will be provided with separate frames uniformaly sampled from a video. \
+        Task: assess the depth perception of a laparoscopic cholecystectomy. It is scored on a scale from 1 to 5. Use the following criteria to output the score: \
+        1. Constantly overshoots target, wide swings, slow to correct; \
+        3. Some overshooting or missing of target, but quick to correct; \
+        5. Accurately directs instruments in the correct plane to target; \
+        Instructions: assess the video carefully, and respond with the depth perception score. Only output the score.'
+        # bimanual dexterity
+        PROMPTS[('heichole_skill_assessment_bimanual_dexterity', 'Qwen2-VL-7B-Instruct')] = 'You are a helpful medical video assistant. \
+        Task: assess the bimanual dexterity of a laparoscopic cholecystectomy. It is scored on a scale from 1 to 5. Use the following criteria to output the score: \
+        1. Uses only one hand, ignores nondominant hand, poor coordination between hands; \
+        3. Uses both hands, but does not optimize interaction between hands; \
+        5. Expertly uses both hands in a complimentary manner to provide optimal exposure; \
+        Instructions: assess the video carefully, and respond with the bimanual dexterity score. Only output the score.'
+        PROMPTS[('heichole_skill_assessment_bimanual_dexterity', 'Phi-3.5-Vision')] = 'You are a helpful medical video assistant. You will be provided with separate frames uniformaly sampled from a video. \
+        Task: assess the bimanual dexterity of a laparoscopic cholecystectomy. It is scored on a scale from 1 to 5. Use the following criteria to output the score: \
+        1. Uses only one hand, ignores nondominant hand, poor coordination between hands; \
+        3. Uses both hands, but does not optimize interaction between hands; \
+        5. Expertly uses both hands in a complimentary manner to provide optimal exposure; \
+        Instructions: assess the video carefully, and respond with the bimanual dexterity score. Only output the score.'
+        # efficiency
+        PROMPTS[('heichole_skill_assessment_efficiency', 'Qwen2-VL-7B-Instruct')] = 'You are a helpful medical video assistant. \
+        Task: assess the efficiency of a laparoscopic cholecystectomy. It is scored on a scale from 1 to 5. Use the following criteria to output the score: \
+        Uncertain, inefficient efforts; many tentative movements; constantly changing focus or persisting without progress; \
+        1. Uncertain, inefficient efforts; many tentative movements; constantly changing focus or persisting without progress; \
+        3. Slow, but planned movements are reasonably organized; \
+        5. Confident, efficient and safe conduct, maintains focus on task until it is better performed by way of an alternative approach; \
+        Instructions: assess the video carefully, and respond with the efficiency score. Only output the score.'
+        PROMPTS[('heichole_skill_assessment_efficiency', 'Phi-3.5-Vision')] = 'You are a helpful medical video assistant. You will be provided with separate frames uniformaly sampled from a video. \
+        Task: assess the efficiency of a laparoscopic cholecystectomy. It is scored on a scale from 1 to 5. Use the following criteria to output the score: \
+        Uncertain, inefficient efforts; many tentative movements; constantly changing focus or persisting without progress; \
+        1. Uncertain, inefficient efforts; many tentative movements; constantly changing focus or persisting without progress; \
+        3. Slow, but planned movements are reasonably organized; \
+        5. Confident, efficient and safe conduct, maintains focus on task until it is better performed by way of an alternative approach; \
+        Instructions: assess the video carefully, and respond with the efficiency score. Only output the score.'
+        # difficulty
+        PROMPTS[('heichole_skill_assessment_difficulty', 'Qwen2-VL-7B-Instruct')] = 'You are a helpful medical video assistant. \
+        Task: assess the difficulty of a laparoscopic cholecystectomy. It is scored on a scale from 1 to 5. Use the following criteria to output the score: \
+        1. Easy exploration and dissection; \
+        3. Moderate difficulty (eg, mild inflammation, scarring, adhesions, obesity, or severity of disease); \
+        5. Extremely difficult (eg, severe inflammation, scarring, adhesions, obesity, or severity of disease); \
+        Instructions: assess the video carefully, and respond with the difficulty score. Only output the score.'
+        PROMPTS[('heichole_skill_assessment_difficulty', 'Phi-3.5-Vision')] = 'You are a helpful medical video assistant. You will be provided with separate frames uniformaly sampled from a video. \
+        Task: assess the difficulty of a laparoscopic cholecystectomy. It is scored on a scale from 1 to 5. Use the following criteria to output the score: \
+        1. Easy exploration and dissection; \
+        3. Moderate difficulty (eg, mild inflammation, scarring, adhesions, obesity, or severity of disease); \
+        5. Extremely difficult (eg, severe inflammation, scarring, adhesions, obesity, or severity of disease); \
+        Instructions: assess the video carefully, and respond with the difficulty score. Only output the score.'
+
+        PROMPTS[('autolaporo_maneuver_classification', 'Qwen2-VL-7B-Instruct')] = 'You are a helpful medical video assistant. \
+        Task: predict the laparoscope motion that will occur immediately after the video. The seven types of defined motion are: \
+        Static, Up, Down, Left, Right, Zoom-in, Zoom-out. \
+        The future movement will be made to ensure proper field-of-view for the surgeon. If no movement is needed, then output Static. \
+        Instructions: assess the video carefully, and respond with the future laparoscope movement. Only output one of the given motions, and do not explain why.'
+        PROMPTS[('autolaporo_maneuver_classification', 'Phi-3.5-Vision')] = 'You are a helpful medical video assistant. You will be provided with separate frames uniformaly sampled from a video. \
+        Task: predict the laparoscope motion that will occur immediately after the video. The seven types of defined motion are: \
+        Static, Up, Down, Left, Right, Zoom-in, Zoom-out. \
+        The future movement will be made to ensure proper field-of-view for the surgeon. If no movement is needed, then output Static. \
+        Instructions: assess the video carefully, and respond with the future laparoscope movement. Only output one of the given motions, and do not explain why.'
+
+
+        for tuple in list(PROMPTS):
+                try:
+                        task, model = tuple
+                        if model == 'Phi-3.5-Vision' and ('jigsaws' in task or task == 'autolaporo_maneuver_classification' or 'heichole_skill_assessment' in task
+                                PROMPTS[(task, 'InternVL2-8B')] = PROMPTS[(task, model)]
+                                PROMPTS[(task, 'Llama-3-VILA1.5-8b')] = PROMPTS[(task, model)]
+                                PROMPTS[(task, 'GeminiPro1-5')] = PROMPTS[(task, model)]
+                                PROMPTS[(task, 'GPT4o')] = PROMPTS[(task, model)]
+                except:
+                        pass
+
         return PROMPTS[(task, model)]
