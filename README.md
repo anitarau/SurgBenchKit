@@ -39,7 +39,7 @@ To run a single task instance (one task on one data set with one model) use this
 ```
 python eval.py task=heichole_action_recognition model=GPT4o exp_name=experiment1
 ```
-Here is a full list of all task instances currently supported:
+Here is a full list of all task instances currently supported (more task instances are still beng added to this repo):
 ```
 python eval.py task=avos_action_recognition
 python eval.py task=cholec80_phase_recogntion
@@ -122,4 +122,3 @@ and also consider citing VLMEvalKit:
   year={2024}
 }
 ```
-<p align="right"><a href="#top">🔝Back to top</a></p>
