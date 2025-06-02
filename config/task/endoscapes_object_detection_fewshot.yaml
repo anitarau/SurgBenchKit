@@ -3,6 +3,6 @@ name: endoscapes_object_detection_fewshot
 data: EndoscapesObjectDetectionPerIM
 data_config:
   transform: None
-  data_dir: /pasteur/data/endoscapes/
+  data_dir: /path/to/endoscapes/
 label_names: ['cyctic artery', 'cystic duct', 'cystic plate', 'gallbladder', 'tool']
 shots: one

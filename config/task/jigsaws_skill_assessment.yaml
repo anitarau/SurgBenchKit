@@ -1,0 +1,9 @@
+# Task 
+name: jigsaws_skill_assessment
+data: JIGSAWSSkillAssessment
+data_config:
+  data_dir: /pasteur/u/markendo/benchmarking-surgery-summer2024/data/jigsaws_skill_assessment  #/pasteur/data/JIGSAWS/
+  category: Knot_Tying
+  score: respect_for_tissue
+  dataset_name: JIGSAWS
+label_names: ['1', '2', '3', '4', '5']

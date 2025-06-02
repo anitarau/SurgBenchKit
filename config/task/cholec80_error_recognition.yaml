@@ -1,0 +1,10 @@
+# Task 
+name: cholec80_error_recognition
+data: ErrorRecognition
+data_config:
+  transform: None
+  data_dir: "/path/to/data"
+  ann_dir: "/path/to/annotations"
+  dataset_name: "Cholec80"
+label_names: ['Bleeding', 'Bile Spillage', 'Thermal Injury', 'Perforation']
+shots: zero
