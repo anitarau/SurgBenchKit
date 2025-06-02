@@ -2,10 +2,11 @@ from torch.utils.data import Dataset
 import os
 
 class JIGSAWSSkillAssessment(Dataset):
-    def __init__(self, config, split, transform=None, use_api=False):
+    def __init__(self, config, split):
         assert split in ['train', 'val', 'test']
         self.data_dir = config['data_config']['data_dir']
         self.category = config['data_config']['category'] # knot tying, needle passing, suturing
+        self.dataset_name = config['data_config']['dataset_name']
         self.score = config['data_config']['score']
         assert self.category in ['Knot_Tying', 'Needle_Passing', 'Suturing']
         self.split = split
@@ -26,7 +27,7 @@ class JIGSAWSSkillAssessment(Dataset):
                 video_name = example[cols.index('video_name')]
                 video_name = f'{video_name.replace(self.category + "_", "")}.mp4'
                 _, video_name = os.path.split(video_name)
-                video_path = os.path.join(self.video_dir, video_name)
+                video_path = os.path.join(video_dir, video_name)
                 score = example[cols.index(self.score)]
                 
                 labels.append((video_path, score))
@@ -37,7 +38,8 @@ class JIGSAWSSkillAssessment(Dataset):
 
     def __getitem__(self, idx):
         video_path, video_label = self.labels[idx]
+        video = {'path': video_path}
         return (
-            video_path,
+            video,
             video_label
         )

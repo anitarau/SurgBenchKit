@@ -1,8 +1,0 @@
-# Task 
-name: avos_action_prediction_fewshot
-data: AVOSActionSegmentation
-data_config:
-  transform: None
-  data_dir: /pasteur2/u/arau/data/AVOS_MedGemini
-label_names: ['cutting', 'tying', 'suturing', 'background']
-shots: one

@@ -22,7 +22,13 @@ If you want to evaluate SurgVLP, we recommend using a seperate environment for i
 `pip install git+https://github.com/CAMMA-public/SurgVLP.git`
 
 ### Step 2: Add your API keys to .env file
-For Gemini and GPT you'll need to set up an API key and add it to the `.env` file.
+For Gemini and GPT you'll need to set up an API key and add it to the `.env` file. It could look like this:
+```
+GOOGLE_API_KEY="XXX"
+OPENAI_API_KEY="XXX"
+HF_HOME="/path/to/"
+HF_TOKEN="XXX"
+```
 ### Step 3: Prepare datasets
 Download datasets from the original sources. Add their local paths in the task config files (e.g. `config/task/cholec80_phase_recognition.yaml`).
 For Heichole we wrote a script to extract frames in `heichole_helpers.py` in case it helps.

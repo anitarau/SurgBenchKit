@@ -17,9 +17,8 @@ from tqdm import tqdm
 from torch.utils.data import Dataset
 
 
-class ErrorClassification(Dataset):
+class ErrorRecognition(Dataset):
     """
-    Error Classification dataset based on version 2 of the temporal annotations.
     The types of errors include: [Bleeding, Bile Spillage, Thermal Injury, Perforation]
     """
     def __init__(self, config, split):
@@ -178,8 +177,9 @@ class ErrorClassification(Dataset):
         return len(self.labels)
 
     def __getitem__(self, idx):
-        video_path, error_type = self.labels[idx]
+        video_path, video_label = self.labels[idx]
+        video = {'path': video_path}
         return (
-            {'video': None, 'path': video_path},
-            {'error_type': error_type} 
+            video,
+            video_label
         )
