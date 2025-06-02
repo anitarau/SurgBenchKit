@@ -442,17 +442,129 @@ def get_prompts(path, task, model):
         grasp, hold, cut, or clip. It is possible that the insturment is idle and no action is performed. Aggregate the actions across all instruments. For each action return a boolean indicating if the action is performed by any instrument. \
         Use this JSON schema: {"grasp": bool, "hold": bool, "cut": bool, "clip": bool} and avoid line breaks. ']
 
+
+        # AVOS action recognition
+        PROMPTS[('avos_action_recognition', 'GeminiPro1-5')] = 'You are shown an image captured during an open surgery. Determine the action being performed in the image. The possible actions are \
+        0: cutting - if the surgeon is using a tool like scissors, scalpel, knife, or electrocautery device to cut or dissect tissues. 1: tying - if the surgeon is using their hands or needle holders to create secure knots. 2: suturing - if the surgeon is closing an open wound with a needle but not creating secure knots. 3: background - if no surgical action is being performed, including actions like using forceps, clamps, retractors, or dilators. There are no other options. Use this JSON schema: {"action": int} and avoid line breaks. '
+
+
+        PROMPTS[('avos_action_recognition_oneshot', 'GeminiPro1-5')] = [path + 'EUdac6A9n60-000006767.jpg',
+                                                                        'output: {"action": 3}',
+                                                                        path + 'Xg6vD3vngLQ-000000975.jpg',
+                                                                        'output: {"action": 0}',
+                                                                        path + 'FUGhWj5iv70-000008279.jpg',
+                                                                        'output: {"action": 2}',
+                                                                        path + 'JUTyS7ZRRkQ-000006353.jpg',
+                                                                        'output: {"action": 1}',
+                                                                        'You are shown an image captured during an open surgery. Determine the action being performed in the image. The possible actions are \
+                                                                        0: cutting - if the surgeon is using a tool like scissors, scalpel, knife, or electrocautery device to cut or dissect tissues. \
+                                                                        1: tying - if the surgeon is using their hands or needle holders to create secure knots. \
+                                                                                2: suturing - if the surgeon is closing an open wound with a needle but not creating secure knots. \
+                                                                                3: background - if no surgical action is being performed, including actions like using forceps, clamps, retractors, or dilators. \
+                                                                                        There are no other options. Use this JSON schema: {"action": int} and avoid line breaks. '
+                                                                        ]
+
+        PROMPTS[('avos_action_recognition_threeshot', 'GeminiPro1-5')] = [path + 'S4p9MmTfVTs-000001445.jpg', 
+                                                                  'output: {"action": 3}', 
+                                                                  path + 'RWHBTwfa5C8-000003575.jpg', 
+                                                                  'output: {"action": 3}', 
+                                                                  path + 'toE_4MtsqQM-000000488.jpg', 
+                                                                  'output: {"action": 0}', 
+                                                                  path + 'dPvRrcSsc6Y-000000662.jpg', 
+                                                                  'output: {"action": 3}', 
+                                                                  path + 'cpgMJ7KOVl8-000004213.jpg', 
+                                                                  'output: {"action": 0}', 
+                                                                  path + 'N32N6VEcW2I-000007967.jpg', 
+                                                                  'output: {"action": 2}', 
+                                                                  path + 'vtK1XN4ZaU4-000003552.jpg', 
+                                                                  'output: {"action": 0}', 
+                                                                  path + 'TFwFMav_cpE-000014219.jpg', 
+                                                                  'output: {"action": 1}', 
+                                                                  path + 'N32N6VEcW2I-000007303.jpg', 
+                                                                  'output: {"action": 1}', 
+                                                                  path + 'VtJtGtC3R80-000003911.jpg', 
+                                                                  'output: {"action": 1}', 
+                                                                  path + 'SNsUtI82de8-000009903.jpg', 
+                                                                  'output: {"action": 2}', 
+                                                                  path + 'e12tIDPDfwU-000003095.jpg', 
+                                                                  'output: {"action": 2}',
+                                                                        'You are shown an image captured during an open surgery. Determine the action being performed in the image. The possible actions are \
+                                                                        0: cutting - if the surgeon is using a tool like scissors, scalpel, knife, or electrocautery device to cut or dissect tissues. \
+                                                                        1: tying - if the surgeon is using their hands or needle holders to create secure knots. \
+                                                                                2: suturing - if the surgeon is closing an open wound with a needle but not creating secure knots. \
+                                                                                3: background - if no surgical action is being performed, including actions like using forceps, clamps, retractors, or dilators. \
+                                                                                        There are no other options. Use this JSON schema: {"action": int} and avoid line breaks. ']
+
+        PROMPTS[('avos_action_recognition_fiveshot', 'GeminiPro1-5')] = [path + 'EswP8VDC85s-000000799.jpg', 
+                                                                        'output: {"action": 0}', 
+                                                                        path + 'synW6molzgA-000005228.jpg', 
+                                                                        'output: {"action": 0}', 
+                                                                        path + 'l5h_tOU_D9w-000000254.jpg', 
+                                                                        'output: {"action": 0}', 
+                                                                        path + 'GJ5RwKonnms-000001211.jpg', 
+                                                                        'output: {"action": 0}', 
+                                                                        path + 'L8k75Onag_o-000006575.jpg', 
+                                                                        'output: {"action": 0}', 
+                                                                        path + 'oD5gC2ESBnk-000006759.jpg', 
+                                                                        'output: {"action": 3}', 
+                                                                        path + 'FotC4hB7Y0c-000002397.jpg', 
+                                                                        'output: {"action": 2}', 
+                                                                        path + 'ou4iO5ah9ys-000000995.jpg', 
+                                                                        'output: {"action": 3}', 
+                                                                        path + 'ytgWAMS1SkE-000007629.jpg', 
+                                                                        'output: {"action": 3}', 
+                                                                        path + 'V7vkRKaUkn8-000008998.jpg', 
+                                                                        'output: {"action": 3}', 
+                                                                        path + 'DpeAsOXVruw-000003135.jpg', 
+                                                                        'output: {"action": 2}', 
+                                                                        path + '6idNh90AdtA-000001685.jpg', 
+                                                                        'output: {"action": 3}', 
+                                                                        path + 'VtJtGtC3R80-000007171.jpg', 
+                                                                        'output: {"action": 1}', 
+                                                                        path + 'S1R95eOuSNk-000002039.jpg', 
+                                                                        'output: {"action": 1}', 
+                                                                        path + 'S1R95eOuSNk-000004079.jpg', 
+                                                                        'output: {"action": 1}', 
+                                                                        path + 'S4p9MmTfVTs-000004337.jpg', 
+                                                                        'output: {"action": 1}', 
+                                                                        path + '3Ql0fGVrQeA-000003717.jpg', 
+                                                                        'output: {"action": 2}', 
+                                                                        path + 'ytgWAMS1SkE-000009809.jpg', 
+                                                                        'output: {"action": 2}', 
+                                                                        path + 'LgmXCOICHLA-000002384.jpg', 
+                                                                        'output: {"action": 1}', 
+                                                                        path + 'GwHruH8trhg-000001674.jpg', 
+                                                                        'output: {"action": 2}',
+                                                                        'You are shown an image captured during an open surgery. Determine the action being performed in the image. The possible actions are \
+                                                                        0: cutting - if the surgeon is using a tool like scissors, scalpel, knife, or electrocautery device to cut or dissect tissues. \
+                                                                        1: tying - if the surgeon is using their hands or needle holders to create secure knots. \
+                                                                                2: suturing - if the surgeon is closing an open wound with a needle but not creating secure knots. \
+                                                                                3: background - if no surgical action is being performed, including actions like using forceps, clamps, retractors, or dilators. \
+                                                                                        There are no other options. Use this JSON schema: {"action": int} and avoid line breaks. '
+                                                                        ]
+
+
+        PROMPTS[('avos_action_recognition', 'CLIP')] = ['A surgeon is cutting tissue with scissors, scalpel, knife, or electrocautery device', 'A surgeon is tying knots with their hands or needle holders', 
+                                                'A surgeon is suturing an open wound creating straight stitches', 'A surgeon performs a background task like using forceps, clamps, retractors, or dilators']
+                                        
+        PROMPTS[('avos_action_recognition', 'SurgVLP')] = ['I cut it', #cutting, tying knots, suturing, background task
+                                                    'I tie it',
+                                                    'I suture it',
+                                                    'I perform a background task']
+        
+        PROMPTS[('avos_action_recognition', 'paligemma-3b-mix-448')] = "Answer en What is the surgical action being performed in this image? Choose from: cutting, tying knots, suturing, background task."
+
         # Heichole Error Classification
-        PROMPTS[('heichole_error_classification', 'Phi-3.5-Vision')] = 'You are a helpful medical video assistant. You will be provided with separate frames uniformaly sampled from a video segment. \
+        PROMPTS[('heichole_error_recognition', 'Phi-3.5-Vision')] = 'You are a helpful medical video assistant. You will be provided with separate frames uniformaly sampled from a video segment. \
         Task: classify the surgical error in the video segment. Below are the defined errors: \
         1. Bleeding \
         2. Bile spillage \
         3. Thermal injury \
         4. Perforation \
         Instructions: Assess the images carefully and classify the error. The segment only contains one error. Only output the error in a JSON format, eg: {"error_type": 1}.'
-        PROMPTS[('heichole_error_classification', 'InternVL2-8B')] = PROMPTS[('heichole_error_classification', 'Phi-3.5-Vision')]
-        PROMPTS[('heichole_error_classification', 'Qwen2-VL-7B-Instruct')] = PROMPTS[('heichole_error_classification', 'Phi-3.5-Vision')]
-        PROMPTS[('heichole_error_classification', 'GeminiPro1-5')] = 'You are a helpful medical video assistant. \
+        PROMPTS[('heichole_error_recognition', 'InternVL2-8B')] = PROMPTS[('heichole_error_recognition', 'Phi-3.5-Vision')]
+        PROMPTS[('heichole_error_recognition', 'Qwen2-VL-7B-Instruct')] = PROMPTS[('heichole_error_recognition', 'Phi-3.5-Vision')]
+        PROMPTS[('heichole_error_recognition', 'GeminiPro1-5')] = 'You are a helpful medical video assistant. \
         Task: Classify which type of error occurs in the provided frames from a cholecystectomy video. \
         The errors include: \
         - 1. Bleeding is defined as blood flowing/moving from a source of injury that is clearly visible on the screen.\
@@ -460,14 +572,14 @@ def get_prompts(path, task, model):
         - 3. Thermal injury is defined as an unintentional burn that leads to injury of non-target tissue. \
         - 4. Perforation is defined any tool tissue interaction that leads to perforation of the gallbladder or biliary ducts and the spillage of bile. \
         Use this JSON schema: {"error_type": int} with the type of error (1 for Bleeding, 2 for Bile Spillage, 3 for Thermal Injury, 4 for Perforation) and avoid line breaks. Only return this JSON.'
-        PROMPTS[('heichole_error_classification', 'GPT4o')] = PROMPTS[('heichole_error_classification', 'GeminiPro1-5')]
+        PROMPTS[('heichole_error_recognition', 'GPT4o')] = PROMPTS[('heichole_error_recognition', 'GeminiPro1-5')]
         
         # Cholec80 Error Classification
-        PROMPTS[('cholec80_error_classification', 'Phi-3.5-Vision')] = PROMPTS[('heichole_error_classification', 'Phi-3.5-Vision')]
-        PROMPTS[('cholec80_error_classification', 'InternVL2-8B')] = PROMPTS[('heichole_error_classification', 'Phi-3.5-Vision')]
-        PROMPTS[('cholec80_error_classification', 'Qwen2-VL-7B-Instruct')] = PROMPTS[('heichole_error_classification', 'Phi-3.5-Vision')]
-        PROMPTS[('cholec80_error_classification', 'GeminiPro1-5')] = PROMPTS[('heichole_error_classification', 'GeminiPro1-5')]
-        PROMPTS[('cholec80_error_classification', 'GPT4o')] = PROMPTS[('heichole_error_classification', 'GeminiPro1-5')]
+        PROMPTS[('cholec80_error_recognition', 'Phi-3.5-Vision')] = PROMPTS[('heichole_error_recognition', 'Phi-3.5-Vision')]
+        PROMPTS[('cholec80_error_recognition', 'InternVL2-8B')] = PROMPTS[('heichole_error_recognition', 'Phi-3.5-Vision')]
+        PROMPTS[('cholec80_error_recognition', 'Qwen2-VL-7B-Instruct')] = PROMPTS[('heichole_error_recognition', 'Phi-3.5-Vision')]
+        PROMPTS[('cholec80_error_recognition', 'GeminiPro1-5')] = PROMPTS[('heichole_error_recognition', 'GeminiPro1-5')]
+        PROMPTS[('cholec80_error_recognition', 'GPT4o')] = PROMPTS[('heichole_error_recognition', 'GeminiPro1-5')]
 
         # Heichole Error Detection
         PROMPTS[('heichole_error_detection', 'GeminiPro1-5')] = 'You are a helpful medical video assistant. \
@@ -625,6 +737,7 @@ def get_prompts(path, task, model):
                         pass
                                 
         
+        # JIGSAWS skill assessment
         # respect for tissue (default)
         PROMPTS[('jigsaws_skill_assessment', 'Qwen2-VL-7B-Instruct')] = 'You are a helpful medical video assistant. \
         Task: assess the respect for tissue on a scale from 1 to 5. Use the following criteria to output the score: \
@@ -678,6 +791,7 @@ def get_prompts(path, task, model):
         5-Obviously planned course of operation with efficient transitions between moves; \
         Instructions: assess the video carefully, and respond with the flow of operation score. Only output the score.'
 
+        # JIGSAWS gesture classification
         PROMPTS[('jigsaws_gesture_classification', 'Qwen2-VL-7B-Instruct')] = 'You are a helpful medical video assistant. \
         Task: classify the gesture of the surgical activity video segment. Below are the defined gestures: \
         G1 Reaching for needle with right hand; \
@@ -715,6 +829,7 @@ def get_prompts(path, task, model):
         G15 Pulling suture with both hands.; \
         Instructions: Assess the images carefully and classify the gesture. The segment only contains one gesture. Only output the gesture, eg: G1.'
 
+        # Heichole skill assessment
         # tissue handling (default)
         PROMPTS[('heichole_skill_assessment', 'Qwen2-VL-7B-Instruct')] = 'You are a helpful medical video assistant. \
         Task: assess the tissue handling of a laparoscopic cholecystectomy. It is scored on a scale from 1 to 5. Use the following criteria to output the score: \
@@ -783,6 +898,8 @@ def get_prompts(path, task, model):
         5. Extremely difficult (eg, severe inflammation, scarring, adhesions, obesity, or severity of disease); \
         Instructions: assess the video carefully, and respond with the difficulty score. Only output the score.'
 
+
+        # Autolaporo maneuver classification
         PROMPTS[('autolaporo_maneuver_classification', 'Qwen2-VL-7B-Instruct')] = 'You are a helpful medical video assistant. \
         Task: predict the laparoscope motion that will occur immediately after the video. The seven types of defined motion are: \
         Static, Up, Down, Left, Right, Zoom-in, Zoom-out. \
@@ -794,15 +911,15 @@ def get_prompts(path, task, model):
         The future movement will be made to ensure proper field-of-view for the surgeon. If no movement is needed, then output Static. \
         Instructions: assess the video carefully, and respond with the future laparoscope movement. Only output one of the given motions, and do not explain why.'
 
-
+        # copy Phi-3.5-Vision prompt to other models
         for tuple in list(PROMPTS):
                 try:
-                        task, model = tuple
-                        if model == 'Phi-3.5-Vision' and ('jigsaws' in task or task == 'autolaporo_maneuver_classification' or 'heichole_skill_assessment' in task
-                                PROMPTS[(task, 'InternVL2-8B')] = PROMPTS[(task, model)]
-                                PROMPTS[(task, 'Llama-3-VILA1.5-8b')] = PROMPTS[(task, model)]
-                                PROMPTS[(task, 'GeminiPro1-5')] = PROMPTS[(task, model)]
-                                PROMPTS[(task, 'GPT4o')] = PROMPTS[(task, model)]
+                        task_, model_ = tuple
+                        if model_ == 'Phi-3.5-Vision' and ('jigsaws' in task_ or task_ == 'autolaporo_maneuver_classification' or 'heichole_skill_assessment' in task_):
+                                PROMPTS[(task_, 'InternVL2-8B')] = PROMPTS[(task_, model_)]
+                                PROMPTS[(task_, 'Llama-3-VILA1.5-8b')] = PROMPTS[(task_, model_)]
+                                PROMPTS[(task_, 'GeminiPro1-5')] = PROMPTS[(task_, model_)]
+                                PROMPTS[(task_, 'GPT4o')] = PROMPTS[(task_, model_)]
                 except:
                         pass
 

@@ -1,9 +1,9 @@
-This project builds upon VLMEvalKit © 2023 VLMEvalKit Authors, licensed under the Apache License 2.0.
-Significant modifications and extensions were made by Anita Rau for research purposes.
+
 
 # A Toolkit for Evaluating Large Vision-Language Models for Surgery
-
-This repo is based on VLMEvalKit: https://github.com/open-compass/VLMEvalKit/tree/main
+This project builds upon VLMEvalKit © 2023 VLMEvalKit Authors, licensed under the Apache License 2.0.
+Significant modifications and extensions were made by the SurgBenchKit authors for research purposes.
+https://github.com/open-compass/VLMEvalKit
 ## 🏗️ Getting Started
 ### Step 1: Clone repo and install packages
 ```
@@ -12,22 +12,22 @@ cd SurgBenchKit
 pip install -e .
 ```
 
-Also manually install this in your environment:
+Also install this in your environment:
 ```
 pip install flash-attn --no-build-isolation
 pip install git+https://github.com/openai/CLIP.git
 ```
 
-Create a second environement for SurgVLP, as Qwen and SurgVLP have a conflict regarding the transformers version. In the second environement follow there original instructions to set up a SurgVLP environment:
-
+If you want to evaluate SurgVLP, we recommend using a seperate environment for it as Qwen and SurgVLP have a transformers version conflict. In the second environment follow there original instructions to set up a SurgVLP environment:
 `pip install git+https://github.com/CAMMA-public/SurgVLP.git`
+
 ### Step 2: Add your API keys to .env file
 For Gemini and GPT you'll need to set up an API key and add it to the `.env` file.
 ### Step 3: Prepare datasets
 Download datasets from the original sources. Add their local paths in the task config files (e.g. `config/task/cholec80_phase_recognition.yaml`).
 For Heichole we wrote a script to extract frames in `heichole_helpers.py` in case it helps.
 ## 📊  Inference and evaluation
-We use hydra to manage task and dataset configurations. Each task and each model are configured in the `config` folder.
+We use hydra to manage task and dataset configurations. Each task and each model are configured in the `config` folder. You can change the default settings (model, task, etc.) in `config/config.yaml`.
 
 To run a single task instance (one task on one data set with one model) use this:
 ```
@@ -35,7 +35,17 @@ python eval.py task=heichole_action_recognition model=GPT4o exp_name=experiment1
 ```
 Here is a full list of all task instances currently supported:
 ```
-TBD
+python eval.py task=avos_action_recognition
+python eval.py task=cholec80_phase_recogntion
+python eval.py task=cholec80_tool_recogntion
+python eval.py task=cholect45_triplet_recogntion
+python eval.py task=desden_anatomy_presence
+python eval.py task=endoscapes_cvs_assessment
+python eval.py task=heichole_action_recognition
+python eval.py task=heichole_phase_recognition
+python eval.py task=heichole_tool_recognition
+python eval.py task=multibypass140_phase_recognition
+
 ```
 
 For few-shot experiments you can use this:
@@ -51,7 +61,7 @@ python eval.py task=heichole_action_recognition model=GPT4o exp_name=experiment1
 Coming soon: Video tasks including gesture recognition, skill assessment, and error recognition and detection.
 
 
-This repo is already configured for: 
+This repo is currently configured for: 
 - GeminiPro 1.5
 - GPT-4o
 - Qwen2-VL
@@ -59,16 +69,16 @@ This repo is already configured for:
 - CLIP
 - OpenCLIP
 - SurgVLP
+- InternVL 2.0
+- Phi-3.5 Vision
+- LLaVA-NeXT
 
-Coming soon: InternVL 2.0, Phi-3.5 Vision
+# Experiment Sweep
+If you want to run several tasks or several models at once, we prepared a script you can use to submit one sbatch job per task-instance to your local cluster: `run_all_combinations.sh`. Make sure you adjust all paths (search for "/path/to") and change the sbatch commands to be compatible with your cluster.
 
-# Sweep results
-If you want to run several tasks or several models, we prepared an sbatch script you can use to submit one job per task-instance:
-
-TBD
 ## Adding models or data
 ### Adding models
-Our repo is built on VLMEvalKit which supports dozens more models. Please check the original repo for details. You can add models that are supported in VLMEvalKit by creating a model configuration in `config/model/`. Make sure to follow the naming and other instructions in the original repo. 
+Our repo is built on VLMEvalKit which supports dozens more models. Please check the original repo for details. You can add models that are supported in VLMEvalKit by creating a model configuration in `config/model/`. Make sure to follow the naming conventions and other instructions in the original repo. 
 
 
 ## Adding datasets or tasks
@@ -86,7 +96,7 @@ To add a new dataset or task, you'll need to:
 
 If you find this work helpful, please consider **starring🌟** this repo.
 
-If you want to cite SurgBenchKit please use
+If you would like to cite SurgBenchKit please use
 
 ```bib
 @article{rau2025systematic,

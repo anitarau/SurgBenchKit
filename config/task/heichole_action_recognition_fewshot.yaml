@@ -3,6 +3,6 @@ name: heichole_action_recognition_fewshot
 data: HeiCholeDataloader
 data_config:
   transform: None
-  data_dir: /pasteur/data/heichole
+  data_dir: /path/to/heichole
 label_names: ['grasp', 'hold', 'cut', 'clip']
 shots: one

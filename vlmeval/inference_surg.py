@@ -99,9 +99,8 @@ def infer_data_video(
     **kwargs
 ):
     """
-    Predicts and evaluates data (video specific), while eval_data only evaluates
+    Predicts and evaluates data (video specific)
     """
-    print('Using infer_data function modified for video data!')
     # Different models have different attributes:
     if isinstance(model.model, str):
         model_name = model.model
@@ -153,7 +152,7 @@ def infer_data_video(
             if frames_presaved:
                 # assume frames are already saved
                 if 'jigsaws_skill_assessment' in task.name:
-                    frame_dir = '/'.join(video_path.split('/')[-3:]).replace('jigsaws_', '')
+                    frame_dir = '/'.join(video_path['path'].split('/')[-3:]).replace('jigsaws_', '')
                     frame_dir = os.path.join(f'../data/jigsaws_skill_assessment', frame_dir)
                     frame_dir = frame_dir.replace('.mp4', '_images')
                 else:
@@ -214,7 +213,7 @@ def infer_data_video(
         else:
             if osp.exists(out_file):
                 os.remove(out_file)
-            try:
+            if True: #try:
                 if 'error_detection' in task['name']:
                     prompt = prompt.replace('<ERROR_TYPE>', label['error_type'])
                 ret = eval_model(video_path, prompt)
@@ -231,10 +230,10 @@ def infer_data_video(
                         pred = json.loads(ret)
                     dump(pred, out_file)
             
-            except Exception as e:
-                print('Exception: ' + str(e))
-                dump('Exception: ' + str(e), out_file)
-                continue
+            #except Exception as e:
+            #    print('Exception: ' + str(e))
+            #    dump('Exception: ' + str(e), out_file)
+            #    continue
     print('-'*60)
 
     preds, labels = eval_data(model, work_dir, name, dataset, task)
@@ -595,7 +594,7 @@ def eval_data(
     *args, 
     **kwargs
 ):
-    # This function reads all files in a dataset and sets missing predictions to a defualt prediction.
+    # This function reads all files in a dataset and sets missing predictions to a dafault prediction.
 
     if isinstance(model.model, str):
         model_name = model.model
@@ -638,7 +637,7 @@ def eval_data(
             label_fixed = np.delete(label, -2)  # cut null class
             labels.append(label_fixed)
 
-    elif 'error_classification' in task['name']:
+    elif 'error_recognition' in task['name']:
         label_map = {idx: label for idx, label in enumerate(task['label_names'])}
         labels_dict = {filename: label_array for filename, label_array in dataset.labels}
         default = 0
@@ -754,7 +753,7 @@ def eval_data(
         if 'cholec80_phase_recognition' in task['name']:
             labels = np.array(labels).reshape(-1,1)
     
-    elif 'avos_action' in task['name']: # TODO is this needed?
+    elif 'avos_action' in task['name']:
         label_map = {idx: label for idx, label in enumerate(task['label_names'])}
         label_map_inversed = {label: idx for idx, label in enumerate(task['label_names'])}
         default = np.atleast_1d(np.array(3))  # 3 is background
@@ -1182,7 +1181,7 @@ def eval_metrics(
     if not 'phase' in task['name'] \
         and not 'avos' in task['name'] \
         and not 'error_detection' in task['name'] \
-        and not 'error_classification' in task['name'] \
+        and not 'error_recognition' in task['name'] \
         and not 'disease_severity' in task['name'] \
         and not 'intermountain_skill_assessment' in task['name']:
         for i in range(labels.shape[1]):
@@ -1255,7 +1254,7 @@ def eval_metrics(
             elif np.ndim(preds) == 1:
                 preds = preds.reshape(-1,1)
         map_ids = np.unique([labels, preds])
-    elif 'error_classification' in task['name']:
+    elif 'error_recognition' in task['name']:
         map_ids = np.unique([labels, preds]) - 1
     else:
         map_ids = range(len(label_map))

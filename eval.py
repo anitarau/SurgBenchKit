@@ -31,9 +31,10 @@ def main(cfg: DictConfig):
 
     if cfg.model.contrastive:
         cfg.eval_mode = f'{cfg.eval_mode}_contrastive'
-    elif (
-        'error_classification' in cfg.task.name or \
-        'error_detection' in cfg.task.name
+    elif (  # video tasks
+        'error_recognition' in cfg.task.name or \
+        'error_detection' in cfg.task.name or \
+        'skill_assessment' in cfg.task.name 
     ):
         cfg.eval_mode = f'{cfg.eval_mode}_video'
 

@@ -3,7 +3,7 @@ name: heichole_tool_recognition
 data: HeiCholeDataloader
 data_config:
   transform: None
-  data_dir: /pasteur/data/heichole
+  data_dir: /path/to/heichole
 label_names: ['Grasper', 'Clipper', 'Coagulation instruments', 'Scissors', 'Suction-irrigation', 'Specimen bag', 'Stapler']
 clip_eval_mode: 'sigmoid'  # multi-label binary classification
 shots: zero

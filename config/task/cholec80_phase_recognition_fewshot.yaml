@@ -3,6 +3,6 @@ name: cholec80_phase_recognition_fewshot
 data: Cholec80PhaseRecognition
 data_config:
   transform: None
-  data_dir: /pasteur/data/cholec80
+  data_dir: /path/to/cholec80
 label_names: ['Preparation', 'CalotTriangleDissection', 'ClippingCutting', 'GallbladderDissection', 'GallbladderPackaging', 'CleaningCoagulation', 'GallbladderRetraction']
 shots: one

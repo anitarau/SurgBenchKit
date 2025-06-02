@@ -3,7 +3,7 @@ name: endoscapes_cvs_assessment
 data: EndoscapesCVSAssessment
 data_config:
   transform: None
-  data_dir: /pasteur/data/endoscapes/
+  data_dir: /path/to/endoscapes/
 label_names: ['C1', 'C2', 'C3']
 clip_eval_mode: 'sigmoid'  # multi-label binary classification
 shots: zero

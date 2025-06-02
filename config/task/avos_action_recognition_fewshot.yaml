@@ -1,0 +1,8 @@
+# Task 
+name: avos_action_recognition_fewshot
+data: AVOSActionRecognition
+data_config:
+  transform: None
+  data_dir: /path/to/AVOS
+label_names: ['cutting', 'tying', 'suturing', 'background']
+shots: one
